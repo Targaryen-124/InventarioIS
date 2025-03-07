@@ -20,6 +20,7 @@ public class Categorias extends javax.swing.JFrame {
     
     public Categorias() {
         initComponents();
+        cargarCategorias();
     }
     
     @SuppressWarnings("unchecked")
@@ -44,6 +45,7 @@ public class Categorias extends javax.swing.JFrame {
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
+        jComboBox1 = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Sistema de Inventario");
@@ -227,6 +229,13 @@ public class Categorias extends javax.swing.JFrame {
             }
         });
 
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -244,7 +253,9 @@ public class Categorias extends javax.swing.JFrame {
                 .addComponent(jButton4)
                 .addGap(18, 18, 18)
                 .addComponent(jButton5)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(19, 19, 19))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -256,14 +267,45 @@ public class Categorias extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton4)
-                    .addComponent(jButton5))
+                    .addComponent(jButton5)
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
-   
+
+    private void cargarCategorias() {
+        Connection conn = null;
+        try {
+            conn = new Conexion().estableceConexion();
+            String sql = "SELECT categoria FROM categorias";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            ResultSet rs = pstmt.executeQuery();
+
+            jComboBox1.removeAllItems(); // Limpiar el combo box antes de agregar nuevos elementos
+
+            while (rs.next()) {
+                jComboBox1.addItem(rs.getString("categoria"));
+            }
+
+            rs.close();
+            pstmt.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+    
+    
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         dispose();
     }//GEN-LAST:event_jButton5ActionPerformed
@@ -444,6 +486,50 @@ public class Categorias extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButton4ActionPerformed
 
+    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+         // Obtener la categoría seleccionada
+        String categoriaSeleccionada = (String) jComboBox1.getSelectedItem();
+
+        // Verificar que se haya seleccionado algo
+        if (categoriaSeleccionada != null) {
+            Connection conn = null;
+            try {
+                // Obtener la conexión a la base de datos
+                conn = new Conexion().estableceConexion();
+
+                // Consulta SQL para obtener los detalles de la categoría seleccionada
+                String sql = "SELECT idcategorias, descripcion, activo FROM categorias WHERE categoria = ?";
+                PreparedStatement pstmt = conn.prepareStatement(sql);
+                pstmt.setString(1, categoriaSeleccionada); // Establecer el parámetro
+                ResultSet rs = pstmt.executeQuery();
+
+                // Si se encuentra la categoría, actualizar los campos
+                if (rs.next()) {
+                    idCategoria = rs.getInt("idcategorias"); // Asignar el ID de la categoría
+                    jTextField1.setText(String.valueOf(idCategoria)); // Mostrar el ID
+                    jTextField2.setText(categoriaSeleccionada); // Mostrar la categoría
+                    jTextField3.setText(rs.getString("descripcion")); // Mostrar la descripción
+                    jCheckBox1.setSelected(rs.getInt("activo") == 1); // Actualizar el estado "activo"
+                }
+
+                // Cerrar recursos
+                rs.close();
+                pstmt.close();
+            } catch (SQLException e) {
+                e.printStackTrace(); // Manejo de errores
+            } finally {
+                // Cerrar la conexión
+                if (conn != null) {
+                    try {
+                        conn.close();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    }//GEN-LAST:event_jComboBox1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -488,6 +574,7 @@ public class Categorias extends javax.swing.JFrame {
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton7;
     private javax.swing.JCheckBox jCheckBox1;
+    private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

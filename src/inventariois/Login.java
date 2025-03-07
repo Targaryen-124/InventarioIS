@@ -5,6 +5,10 @@
 package inventariois;
 
 import javax.swing.JFrame;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  *
@@ -158,14 +162,53 @@ public class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_jBtnSalirActionPerformed
 
     private void jBtnIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnIngresarActionPerformed
-        Principal principal = new Principal();
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                principal.setExtendedState(JFrame.MAXIMIZED_BOTH);
-                principal.setVisible(true);
-                dispose();
+        String usuario = jTFUsuario.getText();
+        String contraseña = jTFContra.getText();
+
+        if (validarCredenciales(usuario, contraseña)) {
+            Principal principal = new Principal();
+            java.awt.EventQueue.invokeLater(new Runnable() {
+                public void run() {
+                    principal.setExtendedState(JFrame.MAXIMIZED_BOTH);
+                    principal.setVisible(true);
+                    dispose();
+                }
+            });
+        } else {
+            javax.swing.JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrectos", "Error de autenticación", javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private boolean validarCredenciales(String usuario, String contraseña) {
+        String sql = "SELECT * FROM usuarios WHERE usuario = ? AND password = ? AND activo = 1";
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            // Obtener la conexión usando tu método
+            conn = new Conexion().estableceConexion();
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, usuario);
+            pstmt.setString(2, contraseña);
+
+            rs = pstmt.executeQuery();
+            return rs.next(); // Si hay un resultado, las credenciales son válidas
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            javax.swing.JOptionPane.showMessageDialog(this, "Error al conectar con la base de datos", "Error", javax.swing.JOptionPane.ERROR_MESSAGE);
+            return false;
+        } finally {
+            // Cerrar los recursos en el bloque finally
+            try {
+                if (rs != null) rs.close();
+                if (pstmt != null) pstmt.close();
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
-        });
+        }
     }//GEN-LAST:event_jBtnIngresarActionPerformed
 
     /**
