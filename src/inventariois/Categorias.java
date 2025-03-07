@@ -15,7 +15,9 @@ import javax.swing.JOptionPane;
  * @author Yohana Padilla
  */
 public class Categorias extends javax.swing.JFrame {
-
+    
+    private int idCategoria;
+    
     public Categorias() {
         initComponents();
     }
@@ -341,18 +343,14 @@ public class Categorias extends javax.swing.JFrame {
             // Verificar si se encontró la categoría
             if (rs.next()) {
                 // Obtener el idcategoria y la descripcion
-                int idCategoria = rs.getInt("idcategorias");
+                idCategoria = rs.getInt("idcategorias"); // Asignar el valor a la variable de instancia
                 String descripcion = rs.getString("descripcion");
                 int activo = rs.getInt("activo");
 
                 // Mostrar los datos en los JTextFields
                 jTextField1.setText(String.valueOf(idCategoria));
                 jTextField3.setText(descripcion);
-                if (activo==1){
-                    jCheckBox1.setSelected(true);
-                } else {
-                    jCheckBox1.setSelected(false);
-                }
+                jCheckBox1.setSelected(activo == 1);
             } else {
                 // Si no se encuentra la categoría
                 JOptionPane.showMessageDialog(this, "Categoría no encontrada.", "Información", JOptionPane.INFORMATION_MESSAGE);
@@ -388,7 +386,7 @@ public class Categorias extends javax.swing.JFrame {
         }
 
         // Obtener los valores de los campos
-        String unidad = jTextField2.getText().trim();
+        String categoria = jTextField2.getText().trim();
         String descripcion = jTextField3.getText().trim();
         boolean activo = jCheckBox1.isSelected();
 
@@ -401,14 +399,14 @@ public class Categorias extends javax.swing.JFrame {
             // Verificar si el ID de categoría ya existe
             String checkSql = "SELECT COUNT(*) FROM categorias WHERE idcategorias = ?";
             PreparedStatement checkStmt = conn.prepareStatement(checkSql);
-            checkStmt.setInt(1, idCategoria);
+            checkStmt.setInt(1, idCategoria); // Usar la variable de instancia
             ResultSet rs = checkStmt.executeQuery();
 
             if (rs.next() && rs.getInt(1) > 0) {
                 // Si existe, actualizar los datos
                 String updateSql = "UPDATE categorias SET categoria = ?, descripcion = ?, activo = ? WHERE idcategorias = ?";
                 PreparedStatement updateStmt = conn.prepareStatement(updateSql);
-                updateStmt.setString(1, unidad);
+                updateStmt.setString(1, categoria);
                 updateStmt.setString(2, descripcion);
                 updateStmt.setInt(3, activo ? 1 : 0); // Convertir boolean a int
                 updateStmt.setInt(4, idCategoria);
@@ -420,7 +418,7 @@ public class Categorias extends javax.swing.JFrame {
                 String insertSql = "INSERT INTO categorias (idcategorias, categoria, descripcion, activo) VALUES (?, ?, ?, ?)";
                 PreparedStatement insertStmt = conn.prepareStatement(insertSql);
                 insertStmt.setInt(1, idCategoria);
-                insertStmt.setString(2, unidad);
+                insertStmt.setString(2, categoria);
                 insertStmt.setString(3, descripcion);
                 insertStmt.setInt(4, activo ? 1 : 0); // Convertir boolean a int
                 insertStmt.executeUpdate();
