@@ -146,10 +146,10 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenu3MenuSelected
 
     private void jMenu4MenuSelected(javax.swing.event.MenuEvent evt) {//GEN-FIRST:event_jMenu4MenuSelected
-        Codigo codigo = new Codigo();
+        Productos producto = new Productos();
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                codigo.setVisible(true);
+                producto.setVisible(true);
             }
         });
     }//GEN-LAST:event_jMenu4MenuSelected
