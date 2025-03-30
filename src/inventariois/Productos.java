@@ -4,8 +4,13 @@
  */
 package inventariois;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+
 
 /**
  *
@@ -119,13 +124,14 @@ public class Productos extends javax.swing.JFrame {
 
         tablaProductos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "ID", "Nombre", "Cantidad", "Precio", "Categoria"
+                "ID", "Nombre", "Descripcion", "Cantidad", "Precio", "Categoria"
             }
         ));
         jScrollPane1.setViewportView(tablaProductos);
@@ -209,45 +215,81 @@ public class Productos extends javax.swing.JFrame {
 
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
         // TODO add your handling code here:
-        
-        DefaultTableModel modelo=(DefaultTableModel) tablaProductos.getModel();
-         modelo.addRow(new Object[]{
-        txtNombre.getText(),
-        txtDescripcion.getText(),
-        txtCantidad.getText(),
-        txtPrecio.getText(),
-        cmbCategoria.getSelectedItem().toString()
-    });
-         limpiarCampos();
-         
-        
+        Connection conn = new Conexion().estableceConexion();
+    String sql = "INSERT INTO productos (nombre, descripcion, cantidad, precio, categoria) VALUES (?, ?, ?, ?, ?)";
+    
+    try {
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setString(1, txtNombre.getText());
+        ps.setString(2, txtDescripcion.getText());
+        ps.setInt(3, Integer.parseInt(txtCantidad.getText()));
+        ps.setDouble(4, Double.parseDouble(txtPrecio.getText()));
+        ps.setString(5, cmbCategoria.getSelectedItem().toString());
+
+        ps.executeUpdate();
+        JOptionPane.showMessageDialog(this, "✅ Producto agregado exitosamente.");
+        conn.close();
+        cargarTabla(); // Refrescar la tabla con los datos actualizados
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(this, "❌ Error al agregar producto: " + e.getMessage());
+    }
     }//GEN-LAST:event_btnAgregarActionPerformed
 
     private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
         // TODO add your handling code here:
-         int fila = tablaProductos.getSelectedRow();
-        if (fila >= 0) {
-         DefaultTableModel modelo = (DefaultTableModel) tablaProductos.getModel();
-         modelo.setValueAt(txtNombre.getText(), fila, 0);
-         modelo.setValueAt(txtDescripcion.getText(), fila, 1);
-         modelo.setValueAt(txtCantidad.getText(), fila, 2);
-         modelo.setValueAt(txtPrecio.getText(), fila, 3);
-         modelo.setValueAt(cmbCategoria.getSelectedItem().toString(), fila, 4);
-        } else {
+        int fila = tablaProductos.getSelectedRow();
+    if (fila >= 0) {
+        int id = Integer.parseInt(tablaProductos.getValueAt(fila, 0).toString()); // Obtener ID seleccionado
+        Connection conn = new Conexion().estableceConexion();
+        String sql = "UPDATE productos SET nombre=?, descripcion=?, cantidad=?, precio=?, categoria=? WHERE id=?";
+        
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, txtNombre.getText());
+            ps.setString(2, txtDescripcion.getText());
+            ps.setInt(3, Integer.parseInt(txtCantidad.getText()));
+            ps.setDouble(4, Double.parseDouble(txtPrecio.getText()));
+            ps.setString(5, cmbCategoria.getSelectedItem().toString());
+            ps.setInt(6, id);
+
+            ps.executeUpdate();
+            JOptionPane.showMessageDialog(this, "Producto actualizado correctamente.");
+            conn.close();
+            cargarTabla();
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Error al actualizar: " + e.getMessage());
+        }
+    } else {
         JOptionPane.showMessageDialog(this, "Seleccione un producto para actualizar.");
-      }
+    }
+        
     }//GEN-LAST:event_btnActualizarActionPerformed
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
         // TODO add your handling code here:
+        int fila = tablaProductos.getSelectedRow();
+    if (fila >= 0) {
+        int id = Integer.parseInt(tablaProductos.getValueAt(fila, 0).toString());
+        int confirmacion = JOptionPane.showConfirmDialog(this, "¿Seguro que deseas eliminar este producto?", "Confirmar eliminación", JOptionPane.YES_NO_OPTION);
         
-        int fila= tablaProductos.getSelectedRow();
-        if(fila >=0){
-            DefaultTableModel modelo = (DefaultTableModel) tablaProductos.getModel();
-            modelo.removeRow(fila);
-        }else {
-            JOptionPane.showMessageDialog(this, "Seleccione un producto para eliminar.");
+        if (confirmacion == JOptionPane.YES_OPTION) {
+            Connection conn = new Conexion().estableceConexion();
+            String sql = "DELETE FROM productos WHERE id=?";
+            
+            try {
+                PreparedStatement ps = conn.prepareStatement(sql);
+                ps.setInt(1, id);
+                ps.executeUpdate();
+                JOptionPane.showMessageDialog(this, "Producto eliminado.");
+                conn.close();
+                cargarTabla();
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(this, "Error al eliminar: " + e.getMessage());
+            }
         }
+    } else {
+        JOptionPane.showMessageDialog(this, "Seleccione un producto para eliminar.");
+    }
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
@@ -260,6 +302,34 @@ private void limpiarCampos() {
     txtCantidad.setText("");
     txtPrecio.setText("");
     cmbCategoria.setSelectedIndex(0); // Reinicia el ComboBox a la primera opción
+}
+
+private void cargarTabla() {
+    Connection conn = new Conexion().estableceConexion();
+    DefaultTableModel modelo = (DefaultTableModel) tablaProductos.getModel();
+    modelo.setRowCount(0); // Limpiar tabla antes de cargar datos
+    
+    String sql = "SELECT * FROM productos";
+    
+    try {
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery();
+        
+        while (rs.next()) {
+            Object[] fila = {
+                rs.getInt("id"),
+                rs.getString("nombre"),
+                rs.getString("descripcion"),
+                rs.getInt("cantidad"),
+                rs.getDouble("precio"),
+                rs.getString("categoria")
+            };
+            modelo.addRow(fila);
+        }
+        conn.close();
+    } catch (SQLException e) {
+        JOptionPane.showMessageDialog(this, "Error al cargar productos: " + e.getMessage());
+    }
 }
     
     /**
@@ -287,6 +357,12 @@ private void limpiarCampos() {
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(Productos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
 
