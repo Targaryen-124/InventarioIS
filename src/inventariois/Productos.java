@@ -57,6 +57,7 @@ public class Productos extends javax.swing.JFrame {
         jTextField2.setText("jTextField2");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Sistema de Inventario");
 
         jPanel1.setBackground(new java.awt.Color(255, 204, 255));
 
@@ -207,6 +208,7 @@ public class Productos extends javax.swing.JFrame {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void txtNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNombreActionPerformed
