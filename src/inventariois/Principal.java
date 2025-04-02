@@ -99,6 +99,15 @@ public class Principal extends javax.swing.JFrame {
         jMenuBar1.add(jMenu5);
 
         jMenu6.setText("Consultas");
+        jMenu6.addMenuListener(new javax.swing.event.MenuListener() {
+            public void menuCanceled(javax.swing.event.MenuEvent evt) {
+            }
+            public void menuDeselected(javax.swing.event.MenuEvent evt) {
+            }
+            public void menuSelected(javax.swing.event.MenuEvent evt) {
+                jMenu6MenuSelected(evt);
+            }
+        });
         jMenuBar1.add(jMenu6);
 
         setJMenuBar(jMenuBar1);
@@ -162,6 +171,15 @@ public class Principal extends javax.swing.JFrame {
             }
         });
     }//GEN-LAST:event_jMenu5MenuSelected
+
+    private void jMenu6MenuSelected(javax.swing.event.MenuEvent evt) {//GEN-FIRST:event_jMenu6MenuSelected
+        Consulta consulta = new Consulta();
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                consulta.setVisible(true);
+            }
+        });
+    }//GEN-LAST:event_jMenu6MenuSelected
 
     
     /**
