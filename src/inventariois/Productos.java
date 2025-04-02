@@ -4,12 +4,17 @@
  */
 package inventariois;
 
+import inventariois.Conexion;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.Statement;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+
 
 
 /**
@@ -17,14 +22,70 @@ import javax.swing.table.DefaultTableModel;
  * @author gerso
  */
 public class Productos extends javax.swing.JFrame {
-
+    
     /**
      * Creates new form Productos
      */
     public Productos() {
         initComponents();
+        cargarCategorias(); // Cargar categorías al iniciar
+        cargarUnidadesMedida(); // Cargar unidades de medida al iniciar
+        cargarProductos(); // Cargar productos
     }
+    
+        private void cargarCategorias() {
+            cmbCategoria.removeAllItems(); // Limpiar el ComboBox antes de llenarlo
+            String sql = "SELECT idcategorias, categoria FROM categorias WHERE activo = 1"; // Solo categorías activas
 
+            try (Connection conn = new Conexion().estableceConexion(); PreparedStatement pst = conn.prepareStatement(sql); ResultSet rs = pst.executeQuery()) {
+                while (rs.next()) {
+                    cmbCategoria.addItem(rs.getString("categoria")); // Agregar la categoría al ComboBox
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Error al cargar categorías: " + e.getMessage());
+            }
+        }
+
+    private void cargarUnidadesMedida() {
+        cmbUnidadMedida.removeAllItems(); // Limpiar el ComboBox antes de llenarlo
+        String sql = "SELECT idunidadesmedida, unidad FROM unidadesmedida WHERE activo = 1"; // Solo unidades activas
+
+        try (Connection conn = new Conexion().estableceConexion(); PreparedStatement pst = conn.prepareStatement(sql); ResultSet rs = pst.executeQuery()) {
+            while (rs.next()) {
+                cmbUnidadMedida.addItem(rs.getString("unidad")); // Agregar la unidad al ComboBox
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error al cargar unidades de medida: " + e.getMessage());
+        }
+    }
+    
+    private void cargarProductos() {
+        DefaultTableModel model = (DefaultTableModel) tblProductos.getModel();
+        model.setRowCount(0);
+        String sql = "SELECT c.idcodigos, c.sku, c.descripcion, c.existencia, c.costounitario, "
+                   + "cat.categoria, um.unidad "
+                   + "FROM codigos c "
+                   + "JOIN categorias cat ON c.categoria = cat.idcategorias "
+                   + "JOIN unidadesmedida um ON c.unidadmedida = um.idunidadesmedida";
+
+        try (Connection conn = new Conexion().estableceConexion(); PreparedStatement pst = conn.prepareStatement(sql); ResultSet rs = pst.executeQuery()) {
+            while (rs.next()) {
+                Object[] row = { 
+                    rs.getInt("idcodigos"), 
+                    rs.getString("sku"), 
+                    rs.getString("descripcion"), 
+                    rs.getInt("existencia"), 
+                    rs.getDouble("costounitario"), 
+                    rs.getString("categoria"), // Descripción de la categoría
+                    rs.getString("unidad") // Descripción de la unidad de medida
+                };
+                model.addRow(row);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error al cargar productos: " + e.getMessage());
+        }
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -42,22 +103,22 @@ public class Productos extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        txtNombre = new javax.swing.JTextField();
+        txtSKU = new javax.swing.JTextField();
         txtDescripcion = new javax.swing.JTextField();
-        txtCantidad = new javax.swing.JTextField();
-        txtPrecio = new javax.swing.JTextField();
+        txtExistencia = new javax.swing.JTextField();
+        txtCosto = new javax.swing.JTextField();
         btnAgregar = new javax.swing.JButton();
-        btnActualizar = new javax.swing.JButton();
         btnEliminar = new javax.swing.JButton();
         btnLimpiar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        tablaProductos = new javax.swing.JTable();
+        tblProductos = new javax.swing.JTable();
         cmbCategoria = new javax.swing.JComboBox<>();
+        jLabel7 = new javax.swing.JLabel();
+        cmbUnidadMedida = new javax.swing.JComboBox<>();
 
         jTextField2.setText("jTextField2");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Sistema de Inventario");
 
         jPanel1.setBackground(new java.awt.Color(255, 204, 255));
 
@@ -79,22 +140,23 @@ public class Productos extends javax.swing.JFrame {
                 .addGap(0, 12, Short.MAX_VALUE))
         );
 
-        jLabel2.setText("Nombre Del Producto:");
+        jLabel2.setText("SKU:");
 
         jLabel3.setText("Descripcion:");
 
-        jLabel4.setText("Cantidad:");
+        jLabel4.setText("Existencia:");
 
-        jLabel5.setText("Precio:");
+        jLabel5.setText("Costo:");
 
         jLabel6.setText("Categoria:");
 
-        txtNombre.addActionListener(new java.awt.event.ActionListener() {
+        txtSKU.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtNombreActionPerformed(evt);
+                txtSKUActionPerformed(evt);
             }
         });
 
+        btnAgregar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/guardar-carpeta.png"))); // NOI18N
         btnAgregar.setText("Agregar");
         btnAgregar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -102,13 +164,7 @@ public class Productos extends javax.swing.JFrame {
             }
         });
 
-        btnActualizar.setText("Actualizar");
-        btnActualizar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnActualizarActionPerformed(evt);
-            }
-        });
-
+        btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/desactivado.png"))); // NOI18N
         btnEliminar.setText("Eliminar");
         btnEliminar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -116,6 +172,7 @@ public class Productos extends javax.swing.JFrame {
             }
         });
 
+        btnLimpiar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/categoria.png"))); // NOI18N
         btnLimpiar.setText("Limpiar");
         btnLimpiar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -123,21 +180,25 @@ public class Productos extends javax.swing.JFrame {
             }
         });
 
-        tablaProductos.setModel(new javax.swing.table.DefaultTableModel(
+        tblProductos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
                 {null, null, null, null, null, null},
                 {null, null, null, null, null, null},
                 {null, null, null, null, null, null},
                 {null, null, null, null, null, null}
             },
             new String [] {
-                "ID", "Nombre", "Descripcion", "Cantidad", "Precio", "Categoria"
+                "ID", "SKU", "Descripcion", "Existencia", "Costo", "Categoria"
             }
         ));
-        jScrollPane1.setViewportView(tablaProductos);
+        tblProductos.setRowHeight(25);
+        jScrollPane1.setViewportView(tblProductos);
 
         cmbCategoria.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        jLabel7.setText("Unidad Medida");
+
+        cmbUnidadMedida.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -147,39 +208,42 @@ public class Productos extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnAgregar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnActualizar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnEliminar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnLimpiar))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel4)
-                            .addComponent(jLabel5)
-                            .addComponent(jLabel6))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtNombre)
-                            .addComponent(txtDescripcion)
-                            .addComponent(txtCantidad)
-                            .addComponent(txtPrecio)
-                            .addComponent(cmbCategoria, 0, 198, Short.MAX_VALUE)))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 407, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(19, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnAgregar)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnEliminar)
+                                .addGap(18, 18, 18)
+                                .addComponent(btnLimpiar))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel7)
+                                    .addComponent(jLabel2)
+                                    .addComponent(jLabel3)
+                                    .addComponent(jLabel4)
+                                    .addComponent(jLabel5)
+                                    .addComponent(jLabel6))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtDescripcion, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtSKU, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtExistencia, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtCosto, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(cmbCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(cmbUnidadMedida, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(39, 39, 39)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtSKU, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
@@ -187,19 +251,22 @@ public class Productos extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(txtCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtExistencia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(txtPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtCosto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(cmbCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel7)
+                    .addComponent(cmbUnidadMedida, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAgregar)
-                    .addComponent(btnActualizar)
                     .addComponent(btnEliminar)
                     .addComponent(btnLimpiar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -211,128 +278,95 @@ public class Productos extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txtNombreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNombreActionPerformed
+    private void txtSKUActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSKUActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_txtNombreActionPerformed
+    }//GEN-LAST:event_txtSKUActionPerformed
 
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
-        // TODO add your handling code here:
-        Connection conn = new Conexion().estableceConexion();
-    String sql = "INSERT INTO productos (nombre, descripcion, cantidad, precio, categoria) VALUES (?, ?, ?, ?, ?)";
-    
-    try {
-        PreparedStatement ps = conn.prepareStatement(sql);
-        ps.setString(1, txtNombre.getText());
-        ps.setString(2, txtDescripcion.getText());
-        ps.setInt(3, Integer.parseInt(txtCantidad.getText()));
-        ps.setDouble(4, Double.parseDouble(txtPrecio.getText()));
-        ps.setString(5, cmbCategoria.getSelectedItem().toString());
+        String sku = txtSKU.getText();
+        String descripcion = txtDescripcion.getText();
+        int cantidad = Integer.parseInt(txtExistencia.getText());
+        double costo = Double.parseDouble(txtCosto.getText());
+        int categoria = cmbCategoria.getSelectedIndex() + 1; // Asegúrate de que el índice coincida con el ID en la base de datos
+        int unidadMedida = cmbUnidadMedida.getSelectedIndex() + 1; // Asegúrate de que el índice coincida con el ID en la base de datos
 
-        ps.executeUpdate();
-        JOptionPane.showMessageDialog(this, "✅ Producto agregado exitosamente.");
-        conn.close();
-        cargarTabla(); // Refrescar la tabla con los datos actualizados
-    } catch (SQLException e) {
-        JOptionPane.showMessageDialog(this, "❌ Error al agregar producto: " + e.getMessage());
-    }
-    }//GEN-LAST:event_btnAgregarActionPerformed
-
-    private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
-        // TODO add your handling code here:
-        int fila = tablaProductos.getSelectedRow();
-    if (fila >= 0) {
-        int id = Integer.parseInt(tablaProductos.getValueAt(fila, 0).toString()); // Obtener ID seleccionado
-        Connection conn = new Conexion().estableceConexion();
-        String sql = "UPDATE productos SET nombre=?, descripcion=?, cantidad=?, precio=?, categoria=? WHERE id=?";
-        
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, txtNombre.getText());
-            ps.setString(2, txtDescripcion.getText());
-            ps.setInt(3, Integer.parseInt(txtCantidad.getText()));
-            ps.setDouble(4, Double.parseDouble(txtPrecio.getText()));
-            ps.setString(5, cmbCategoria.getSelectedItem().toString());
-            ps.setInt(6, id);
-
-            ps.executeUpdate();
-            JOptionPane.showMessageDialog(this, "Producto actualizado correctamente.");
-            conn.close();
-            cargarTabla();
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Error al actualizar: " + e.getMessage());
+        if (sku.isEmpty() || descripcion.isEmpty() || cantidad <= 0 || costo <= 0 || categoria <= 0 || unidadMedida <= 0) {
+            JOptionPane.showMessageDialog(this, "Por favor, complete todos los campos correctamente.");
+            return;
         }
-    } else {
-        JOptionPane.showMessageDialog(this, "Seleccione un producto para actualizar.");
-    }
-        
-    }//GEN-LAST:event_btnActualizarActionPerformed
+
+        String sql = "INSERT INTO codigos (sku, descripcion, unidadmedida, categoria, costounitario, existencia) VALUES (?, ?, ?, ?, ?, ?)";
+        try (Connection conn = new Conexion().estableceConexion(); PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setString(1, sku);
+            pst.setString(2, descripcion);
+            pst.setInt(3, unidadMedida); // Asegúrate de que este sea el ID correcto
+            pst.setInt(4, categoria); // Asegúrate de que este sea el ID correcto
+            pst.setDouble(5, costo);
+            pst.setInt(6, cantidad);
+            pst.executeUpdate();
+            JOptionPane.showMessageDialog(this, "Producto agregado correctamente.");
+            cargarProductos();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error al agregar producto: " + e.getMessage());
+        }
+    }//GEN-LAST:event_btnAgregarActionPerformed
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
         // TODO add your handling code here:
-        int fila = tablaProductos.getSelectedRow();
-    if (fila >= 0) {
-        int id = Integer.parseInt(tablaProductos.getValueAt(fila, 0).toString());
-        int confirmacion = JOptionPane.showConfirmDialog(this, "¿Seguro que deseas eliminar este producto?", "Confirmar eliminación", JOptionPane.YES_NO_OPTION);
-        
-        if (confirmacion == JOptionPane.YES_OPTION) {
-            Connection conn = new Conexion().estableceConexion();
-            String sql = "DELETE FROM productos WHERE id=?";
-            
-            try {
-                PreparedStatement ps = conn.prepareStatement(sql);
-                ps.setInt(1, id);
-                ps.executeUpdate();
-                JOptionPane.showMessageDialog(this, "Producto eliminado.");
-                conn.close();
-                cargarTabla();
-            } catch (SQLException e) {
-                JOptionPane.showMessageDialog(this, "Error al eliminar: " + e.getMessage());
-            }
+           int filaSeleccionada = tblProductos.getSelectedRow();
+        if (filaSeleccionada < 0) {
+            JOptionPane.showMessageDialog(this, "Seleccione un producto para eliminar.");
+            return;
         }
-    } else {
-        JOptionPane.showMessageDialog(this, "Seleccione un producto para eliminar.");
-    }
+        
+        int confirmacion = JOptionPane.showConfirmDialog(this, "¿Estás seguro de eliminar este producto?", "Confirmar eliminación", JOptionPane.YES_NO_OPTION);
+        if (confirmacion != JOptionPane.YES_OPTION) {
+            return;
+        }
+
+        int id = (int) tblProductos.getValueAt(filaSeleccionada, 0);
+        String sql = "DELETE FROM codigos WHERE idcodigos=?";
+        try (Connection conn = new Conexion().estableceConexion(); PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setInt(1, id);
+            pst.executeUpdate();
+            JOptionPane.showMessageDialog(this, "Producto eliminado correctamente.");
+            cargarProductos();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error al eliminar producto: " + e.getMessage());
+        }
+        
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
         // TODO add your handling code here:
         limpiarCampos();
     }//GEN-LAST:event_btnLimpiarActionPerformed
-private void limpiarCampos() {
-    txtNombre.setText("");
-    txtDescripcion.setText("");
-    txtCantidad.setText("");
-    txtPrecio.setText("");
-    cmbCategoria.setSelectedIndex(0); // Reinicia el ComboBox a la primera opción
-}
-
-private void cargarTabla() {
-    Connection conn = new Conexion().estableceConexion();
-    DefaultTableModel modelo = (DefaultTableModel) tablaProductos.getModel();
-    modelo.setRowCount(0); // Limpiar tabla antes de cargar datos
-    
-    String sql = "SELECT * FROM productos";
-    
-    try {
-        PreparedStatement ps = conn.prepareStatement(sql);
-        ResultSet rs = ps.executeQuery();
-        
-        while (rs.next()) {
-            Object[] fila = {
-                rs.getInt("id"),
-                rs.getString("nombre"),
-                rs.getString("descripcion"),
-                rs.getInt("cantidad"),
-                rs.getDouble("precio"),
-                rs.getString("categoria")
-            };
-            modelo.addRow(fila);
-        }
-        conn.close();
-    } catch (SQLException e) {
-        JOptionPane.showMessageDialog(this, "Error al cargar productos: " + e.getMessage());
+    private void limpiarCampos() {
+        txtSKU.setText("");
+        txtDescripcion.setText("");
+        txtExistencia.setText("");
+        txtCosto.setText("");
+        cmbCategoria.setSelectedIndex(0);
+        cmbUnidadMedida.setSelectedIndex(0);// Reinicia el ComboBox a la primera opción
     }
-}
+ 
+    private void tblProductosMouseClicked(java.awt.event.MouseEvent evt) {
+        int filaSeleccionada = tblProductos.getSelectedRow();
+        if (filaSeleccionada >= 0) {
+            txtSKU.setText(tblProductos.getValueAt(filaSeleccionada, 1).toString());
+            txtDescripcion.setText(tblProductos.getValueAt(filaSeleccionada, 2).toString());
+            txtExistencia.setText(tblProductos.getValueAt(filaSeleccionada, 3).toString());
+            txtCosto.setText(tblProductos.getValueAt(filaSeleccionada, 4).toString());
+
+            // Cargar la categoría
+            String categoriaDescripcion = tblProductos.getValueAt(filaSeleccionada, 5).toString();
+            cmbCategoria.setSelectedItem(categoriaDescripcion); // Seleccionar la descripción de la categoría
+
+            // Cargar la unidad de medida
+            String unidadDescripcion = tblProductos.getValueAt(filaSeleccionada, 6).toString();
+            cmbUnidadMedida.setSelectedItem(unidadDescripcion); // Seleccionar la descripción de la unidad de medida
+        }
+    }
     
     /**
      * @param args the command line arguments
@@ -363,10 +397,6 @@ private void cargarTabla() {
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -377,24 +407,25 @@ private void cargarTabla() {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnActualizar;
     private javax.swing.JButton btnAgregar;
     private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnLimpiar;
     private javax.swing.JComboBox<String> cmbCategoria;
+    private javax.swing.JComboBox<String> cmbUnidadMedida;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField jTextField2;
-    private javax.swing.JTable tablaProductos;
-    private javax.swing.JTextField txtCantidad;
+    private javax.swing.JTable tblProductos;
+    private javax.swing.JTextField txtCosto;
     private javax.swing.JTextField txtDescripcion;
-    private javax.swing.JTextField txtNombre;
-    private javax.swing.JTextField txtPrecio;
+    private javax.swing.JTextField txtExistencia;
+    private javax.swing.JTextField txtSKU;
     // End of variables declaration//GEN-END:variables
 }
