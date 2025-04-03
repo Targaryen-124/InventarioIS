@@ -37,6 +37,11 @@ public class Principal extends javax.swing.JFrame {
         jMenu6 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         jMenu1.setText("Usuarios");
         jMenu1.addMenuListener(new javax.swing.event.MenuListener() {
@@ -180,6 +185,15 @@ public class Principal extends javax.swing.JFrame {
             }
         });
     }//GEN-LAST:event_jMenu6MenuSelected
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        Imagen imagen = new Imagen();
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                imagen.setVisible(true);
+            }
+        });
+    }//GEN-LAST:event_formWindowOpened
 
     
     /**
