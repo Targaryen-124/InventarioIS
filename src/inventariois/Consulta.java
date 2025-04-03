@@ -58,6 +58,7 @@ public class Consulta extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Sistema de Inventario");
 
+        jBtnActualizar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jBtnActualizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/transaccion.png"))); // NOI18N
         jBtnActualizar.setText("Actualizar");
         jBtnActualizar.addActionListener(new java.awt.event.ActionListener() {
@@ -66,6 +67,7 @@ public class Consulta extends javax.swing.JFrame {
             }
         });
 
+        jBtnCancelar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jBtnCancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/desactivado.png"))); // NOI18N
         jBtnCancelar.setText("Cancelar");
         jBtnCancelar.addActionListener(new java.awt.event.ActionListener() {
@@ -76,14 +78,15 @@ public class Consulta extends javax.swing.JFrame {
 
         jPanel4.setBackground(new java.awt.Color(255, 204, 255));
 
-        jLabel4.setText("Consulta Movimientos SKU");
+        jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel4.setText("MOVIMIENTOS SKU");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(168, 168, 168)
+                .addGap(176, 176, 176)
                 .addComponent(jLabel4)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -94,6 +97,7 @@ public class Consulta extends javax.swing.JFrame {
                 .addGap(0, 12, Short.MAX_VALUE))
         );
 
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel1.setText("SKU");
 
         tablaConsulta.setModel(new javax.swing.table.DefaultTableModel(
@@ -114,10 +118,13 @@ public class Consulta extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(tablaConsulta);
 
+        jComboBox1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel2.setText("Existencia");
 
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel3.setText("0");
         jLabel3.setToolTipText("");
 
@@ -165,7 +172,7 @@ public class Consulta extends javax.swing.JFrame {
                     .addComponent(jBtnActualizar)
                     .addComponent(jBtnCancelar))
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 429, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 424, Short.MAX_VALUE)
                 .addContainerGap())
         );
 

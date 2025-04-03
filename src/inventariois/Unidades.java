@@ -56,6 +56,7 @@ public class Unidades extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Sistema de Inventario");
 
+        jBtnActualizar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jBtnActualizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/transaccion.png"))); // NOI18N
         jBtnActualizar.setText("Actualizar");
         jBtnActualizar.addActionListener(new java.awt.event.ActionListener() {
@@ -64,6 +65,7 @@ public class Unidades extends javax.swing.JFrame {
             }
         });
 
+        jBtnCancelar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jBtnCancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/desactivado.png"))); // NOI18N
         jBtnCancelar.setText("Cancelar");
         jBtnCancelar.addActionListener(new java.awt.event.ActionListener() {
@@ -74,14 +76,15 @@ public class Unidades extends javax.swing.JFrame {
 
         jPanel4.setBackground(new java.awt.Color(255, 204, 255));
 
-        jLabel4.setText("Gestion de UM");
+        jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel4.setText("GESTION DE UM");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(168, 168, 168)
+                .addGap(188, 188, 188)
                 .addComponent(jLabel4)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -92,8 +95,10 @@ public class Unidades extends javax.swing.JFrame {
                 .addGap(0, 12, Short.MAX_VALUE))
         );
 
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel1.setText("ID");
 
+        jTFCodigo.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jTFCodigo.setEnabled(false);
         jTFCodigo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -101,10 +106,17 @@ public class Unidades extends javax.swing.JFrame {
             }
         });
 
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel2.setText("Unidad");
 
+        jTFUnidad.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel3.setText("Descripcion");
 
+        jTFDescripcion.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+
+        jBtnAgregar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jBtnAgregar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/guardar-carpeta.png"))); // NOI18N
         jBtnAgregar.setText("Agregar");
         jBtnAgregar.addActionListener(new java.awt.event.ActionListener() {
@@ -113,6 +125,7 @@ public class Unidades extends javax.swing.JFrame {
             }
         });
 
+        jBtnDesactivar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jBtnDesactivar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/nota.png"))); // NOI18N
         jBtnDesactivar.setText("Desactivar");
         jBtnDesactivar.addActionListener(new java.awt.event.ActionListener() {
