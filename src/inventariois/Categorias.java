@@ -232,7 +232,7 @@ public class Categorias extends javax.swing.JFrame {
         jPanel6.setBackground(new java.awt.Color(255, 204, 255));
 
         jLabel9.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel9.setText("GESTION DE USUARIOS");
+        jLabel9.setText("GESTION DE CATEGORIAS");
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
