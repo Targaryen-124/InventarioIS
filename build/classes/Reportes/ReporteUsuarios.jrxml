@@ -1,0 +1,153 @@
+<!-- Created with Jaspersoft Studio version 7.0.3.final using JasperReports Library version 7.0.3-41034ca841d452f3305ba55b9042260aaa1ab5dd  -->
+<jasperReport name="ReporteUsuarios" language="java" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="8e15d519-eab3-497d-b483-a5c1caac3ee0">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter.jrdax"/>
+	<style name="Title" fontName="Arial" fontSize="26.0" bold="true"/>
+	<style name="SubTitle" forecolor="#666666" fontName="Arial" fontSize="18.0"/>
+	<style name="Column header" forecolor="#666666" fontName="Arial" fontSize="12.0" bold="true"/>
+	<style name="Detail" fontName="Arial" fontSize="12.0"/>
+	<query language="SQL"><![CDATA[SELECT idusuarios, rol, nombre, apellido, password, usuario, activo FROM usuarios]]></query>
+	<field name="idusuarios" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="idusuarios"/>
+		<property name="com.jaspersoft.studio.field.label" value="idusuarios"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="usuarios"/>
+	</field>
+	<field name="rol" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="rol"/>
+		<property name="com.jaspersoft.studio.field.label" value="rol"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="usuarios"/>
+	</field>
+	<field name="nombre" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="nombre"/>
+		<property name="com.jaspersoft.studio.field.label" value="nombre"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="usuarios"/>
+	</field>
+	<field name="apellido" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="apellido"/>
+		<property name="com.jaspersoft.studio.field.label" value="apellido"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="usuarios"/>
+	</field>
+	<field name="password" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="password"/>
+		<property name="com.jaspersoft.studio.field.label" value="password"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="usuarios"/>
+	</field>
+	<field name="usuario" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="usuario"/>
+		<property name="com.jaspersoft.studio.field.label" value="usuario"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="usuarios"/>
+	</field>
+	<field name="activo" class="java.lang.Boolean">
+		<property name="com.jaspersoft.studio.field.name" value="activo"/>
+		<property name="com.jaspersoft.studio.field.label" value="activo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="usuarios"/>
+	</field>
+	<group name="Group1">
+		<expression><![CDATA[$F{idusuarios}]]></expression>
+		<groupHeader>
+			<band height="35">
+				<element kind="textField" uuid="99b88538-4839-4558-be23-94665bc7afb4" x="11" y="5" width="60" height="30" fontSize="12.0" bold="true" hTextAlign="Justified">
+					<expression><![CDATA[$F{idusuarios}]]></expression>
+					<box topPadding="4"/>
+				</element>
+				<element kind="textField" uuid="1af5cba9-a270-4c11-8216-144ae21bad33" x="85" y="5" width="70" height="30" fontSize="12.0" hTextAlign="Justified">
+					<expression><![CDATA[$F{rol}]]></expression>
+					<box topPadding="4"/>
+				</element>
+				<element kind="textField" uuid="0b835f40-2ce9-48e0-9d41-0f1a5d7a024f" x="170" y="5" width="70" height="30" fontSize="12.0" hTextAlign="Justified">
+					<expression><![CDATA[$F{usuario}]]></expression>
+					<box topPadding="4"/>
+				</element>
+				<element kind="textField" uuid="1e635686-f5f2-44e6-954d-68aa8c92309a" x="250" y="5" width="70" height="30" fontSize="12.0" hTextAlign="Justified">
+					<expression><![CDATA[$F{nombre}]]></expression>
+					<box topPadding="4"/>
+				</element>
+				<element kind="textField" uuid="805f778b-37ee-4bc6-be43-bacb015a557f" x="330" y="5" width="70" height="30" fontSize="12.0" hTextAlign="Justified">
+					<expression><![CDATA[$F{apellido}]]></expression>
+					<box topPadding="4"/>
+				</element>
+				<element kind="textField" uuid="f84f752d-2938-4119-9e99-cddbb55ca961" x="423" y="5" width="65" height="30" fontSize="12.0" hTextAlign="Justified">
+					<expression><![CDATA[$F{activo}]]></expression>
+					<box topPadding="4"/>
+				</element>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="6"/>
+		</groupFooter>
+	</group>
+	<group name="Group2">
+		<expression><![CDATA[$F{rol}]]></expression>
+		<groupHeader>
+			<band height="5"/>
+		</groupHeader>
+	</group>
+	<group name="apellido">
+		<expression><![CDATA[$F{apellido}]]></expression>
+	</group>
+	<group name="password">
+		<expression><![CDATA[$F{password}]]></expression>
+	</group>
+	<group name="usuario">
+		<expression><![CDATA[$F{usuario}]]></expression>
+	</group>
+	<group name="activo">
+		<expression><![CDATA[$F{activo}]]></expression>
+	</group>
+	<background splitType="Stretch"/>
+	<title height="70" splitType="Stretch">
+		<element kind="image" uuid="ea5ad761-92e5-4024-9d51-efba4363bb54" x="275" y="0" width="300" height="64">
+			<expression><![CDATA["leaf_banner_red.png"]]></expression>
+		</element>
+		<element kind="staticText" uuid="91f5fe7f-a65f-46a3-81ae-30f2d82c45a2" x="0" y="13" width="263" height="33" vTextAlign="Middle" style="Title">
+			<text><![CDATA[Reporte de Usuarios]]></text>
+		</element>
+	</title>
+	<pageHeader splitType="Stretch"/>
+	<columnHeader height="37" splitType="Stretch">
+		<element kind="staticText" uuid="214c7f35-1748-4b80-b4f8-7d5ca693a9fc" x="232" y="5" width="93" height="30" fontSize="14.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[Nombre]]></text>
+			<box topPadding="4"/>
+		</element>
+		<element kind="staticText" uuid="2fd3b4aa-f77e-4559-8b17-a4d3896fb2ca" x="325" y="5" width="80" height="30" fontSize="14.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[Apellido]]></text>
+			<box topPadding="4"/>
+		</element>
+		<element kind="staticText" uuid="d474b49d-afe7-4841-a65a-8ee3d21d0e91" x="65" y="5" width="100" height="30" fontSize="14.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[Rol]]></text>
+			<box topPadding="4"/>
+		</element>
+		<element kind="staticText" uuid="eb57a5f1-327c-4c1a-aec3-b1f88381e382" x="155" y="5" width="80" height="30" fontSize="14.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[Usuario]]></text>
+			<box topPadding="4"/>
+		</element>
+		<element kind="staticText" uuid="790040a5-27b2-4823-9fa8-acefddb5f2f4" x="425" y="7" width="60" height="30" fontSize="14.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[Activo]]></text>
+			<box topPadding="4"/>
+		</element>
+		<element kind="staticText" uuid="306a4a87-1b86-4553-ac07-2be4e4b31d1b" x="1" y="5" width="80" height="30" fontSize="14.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[ID]]></text>
+			<box topPadding="4"/>
+		</element>
+	</columnHeader>
+	<detail>
+		<band height="16" splitType="Stretch">
+			<element kind="line" uuid="30093aa1-3dd7-4eea-9cc9-e183637af8f4" positionType="FixRelativeToBottom" x="-4" y="2" width="555" height="1">
+				<pen lineWidth="0.5" lineColor="#999999"/>
+			</element>
+		</band>
+	</detail>
+	<columnFooter height="45" splitType="Stretch"/>
+	<pageFooter height="20" splitType="Stretch">
+		<element kind="textField" uuid="c9e9a989-76ae-4c92-a08c-dba3c3185f04" x="433" y="0" width="80" height="20" fontSize="10.0" bold="false" hTextAlign="Right" style="Column header">
+			<expression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></expression>
+		</element>
+		<element kind="textField" uuid="736cac2d-8f9a-48bb-b4e7-09302ce0e313" x="513" y="0" width="40" height="20" fontSize="10.0" evaluationTime="Report" bold="false" style="Column header">
+			<expression><![CDATA[" " + $V{PAGE_NUMBER}]]></expression>
+		</element>
+		<element kind="textField" uuid="c49bc611-71b3-4860-8112-76288860b48d" x="0" y="0" width="197" height="20" fontSize="10.0" pattern="EEEEE dd MMMMM yyyy" bold="false" style="Column header">
+			<expression><![CDATA[new java.util.Date()]]></expression>
+		</element>
+	</pageFooter>
+	<summary splitType="Stretch"/>
+</jasperReport>

@@ -5,6 +5,7 @@
 package inventariois;
 
 import javax.swing.JFrame;
+import javax.swing.*;
 
 /**
  *
@@ -12,11 +13,15 @@ import javax.swing.JFrame;
  */
 public class Principal extends javax.swing.JFrame {
 
+
     /**
      * Creates new form Principal
      */
-    public Principal() {
+ 
+     public Principal(String rolUsuario) {
+      
         initComponents();
+        configurarRol(rolUsuario);
     }
 
     /**
@@ -29,12 +34,14 @@ public class Principal extends javax.swing.JFrame {
     private void initComponents() {
 
         jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
-        jMenu2 = new javax.swing.JMenu();
-        jMenu3 = new javax.swing.JMenu();
-        jMenu4 = new javax.swing.JMenu();
-        jMenu5 = new javax.swing.JMenu();
-        jMenu6 = new javax.swing.JMenu();
+        menuUsuarios = new javax.swing.JMenu();
+        menuUM = new javax.swing.JMenu();
+        menuCategoria = new javax.swing.JMenu();
+        menuProductos = new javax.swing.JMenu();
+        menuTransacciones = new javax.swing.JMenu();
+        menuConsultas = new javax.swing.JMenu();
+        menuVentas = new javax.swing.JMenu();
+        MenuClientes = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -43,77 +50,101 @@ public class Principal extends javax.swing.JFrame {
             }
         });
 
-        jMenu1.setText("Usuarios");
-        jMenu1.addMenuListener(new javax.swing.event.MenuListener() {
+        menuUsuarios.setText("Usuarios");
+        menuUsuarios.addMenuListener(new javax.swing.event.MenuListener() {
             public void menuCanceled(javax.swing.event.MenuEvent evt) {
             }
             public void menuDeselected(javax.swing.event.MenuEvent evt) {
             }
             public void menuSelected(javax.swing.event.MenuEvent evt) {
-                jMenu1MenuSelected(evt);
+                menuUsuariosMenuSelected(evt);
             }
         });
-        jMenuBar1.add(jMenu1);
+        jMenuBar1.add(menuUsuarios);
 
-        jMenu2.setText("UM");
-        jMenu2.addMenuListener(new javax.swing.event.MenuListener() {
+        menuUM.setText("UM");
+        menuUM.addMenuListener(new javax.swing.event.MenuListener() {
             public void menuCanceled(javax.swing.event.MenuEvent evt) {
             }
             public void menuDeselected(javax.swing.event.MenuEvent evt) {
             }
             public void menuSelected(javax.swing.event.MenuEvent evt) {
-                jMenu2MenuSelected(evt);
+                menuUMMenuSelected(evt);
             }
         });
-        jMenuBar1.add(jMenu2);
+        jMenuBar1.add(menuUM);
 
-        jMenu3.setText("Categorias");
-        jMenu3.addMenuListener(new javax.swing.event.MenuListener() {
+        menuCategoria.setText("Categorias");
+        menuCategoria.addMenuListener(new javax.swing.event.MenuListener() {
             public void menuCanceled(javax.swing.event.MenuEvent evt) {
             }
             public void menuDeselected(javax.swing.event.MenuEvent evt) {
             }
             public void menuSelected(javax.swing.event.MenuEvent evt) {
-                jMenu3MenuSelected(evt);
+                menuCategoriaMenuSelected(evt);
             }
         });
-        jMenuBar1.add(jMenu3);
+        jMenuBar1.add(menuCategoria);
 
-        jMenu4.setText("Productos");
-        jMenu4.addMenuListener(new javax.swing.event.MenuListener() {
+        menuProductos.setText("Productos");
+        menuProductos.addMenuListener(new javax.swing.event.MenuListener() {
             public void menuCanceled(javax.swing.event.MenuEvent evt) {
             }
             public void menuDeselected(javax.swing.event.MenuEvent evt) {
             }
             public void menuSelected(javax.swing.event.MenuEvent evt) {
-                jMenu4MenuSelected(evt);
+                menuProductosMenuSelected(evt);
             }
         });
-        jMenuBar1.add(jMenu4);
+        jMenuBar1.add(menuProductos);
 
-        jMenu5.setText("Transacciones");
-        jMenu5.addMenuListener(new javax.swing.event.MenuListener() {
+        menuTransacciones.setText("Transacciones");
+        menuTransacciones.addMenuListener(new javax.swing.event.MenuListener() {
             public void menuCanceled(javax.swing.event.MenuEvent evt) {
             }
             public void menuDeselected(javax.swing.event.MenuEvent evt) {
             }
             public void menuSelected(javax.swing.event.MenuEvent evt) {
-                jMenu5MenuSelected(evt);
+                menuTransaccionesMenuSelected(evt);
             }
         });
-        jMenuBar1.add(jMenu5);
+        jMenuBar1.add(menuTransacciones);
 
-        jMenu6.setText("Consultas");
-        jMenu6.addMenuListener(new javax.swing.event.MenuListener() {
+        menuConsultas.setText("Consultas");
+        menuConsultas.addMenuListener(new javax.swing.event.MenuListener() {
             public void menuCanceled(javax.swing.event.MenuEvent evt) {
             }
             public void menuDeselected(javax.swing.event.MenuEvent evt) {
             }
             public void menuSelected(javax.swing.event.MenuEvent evt) {
-                jMenu6MenuSelected(evt);
+                menuConsultasMenuSelected(evt);
             }
         });
-        jMenuBar1.add(jMenu6);
+        jMenuBar1.add(menuConsultas);
+
+        menuVentas.setText("Ventas");
+        menuVentas.addMenuListener(new javax.swing.event.MenuListener() {
+            public void menuCanceled(javax.swing.event.MenuEvent evt) {
+            }
+            public void menuDeselected(javax.swing.event.MenuEvent evt) {
+            }
+            public void menuSelected(javax.swing.event.MenuEvent evt) {
+                menuVentasMenuSelected(evt);
+            }
+        });
+        jMenuBar1.add(menuVentas);
+
+        MenuClientes.setText("Clientes");
+        MenuClientes.addMenuListener(new javax.swing.event.MenuListener() {
+            public void menuCanceled(javax.swing.event.MenuEvent evt) {
+            }
+            public void menuDeselected(javax.swing.event.MenuEvent evt) {
+            }
+            public void menuSelected(javax.swing.event.MenuEvent evt) {
+                MenuClientesMenuSelected(evt);
+            }
+        });
+        jMenuBar1.add(MenuClientes);
 
         setJMenuBar(jMenuBar1);
 
@@ -132,59 +163,60 @@ public class Principal extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jMenu1MenuSelected(javax.swing.event.MenuEvent evt) {//GEN-FIRST:event_jMenu1MenuSelected
+
+    private void menuUsuariosMenuSelected(javax.swing.event.MenuEvent evt) {//GEN-FIRST:event_menuUsuariosMenuSelected
         Usuarios usuarios = new Usuarios();
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 usuarios.setVisible(true);
             }
         });
-    }//GEN-LAST:event_jMenu1MenuSelected
+    }//GEN-LAST:event_menuUsuariosMenuSelected
 
-    private void jMenu2MenuSelected(javax.swing.event.MenuEvent evt) {//GEN-FIRST:event_jMenu2MenuSelected
+    private void menuUMMenuSelected(javax.swing.event.MenuEvent evt) {//GEN-FIRST:event_menuUMMenuSelected
         Unidades unidades = new Unidades();
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 unidades.setVisible(true);
             }
         });
-    }//GEN-LAST:event_jMenu2MenuSelected
+    }//GEN-LAST:event_menuUMMenuSelected
 
-    private void jMenu3MenuSelected(javax.swing.event.MenuEvent evt) {//GEN-FIRST:event_jMenu3MenuSelected
+    private void menuCategoriaMenuSelected(javax.swing.event.MenuEvent evt) {//GEN-FIRST:event_menuCategoriaMenuSelected
         Categorias categorias = new Categorias();
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 categorias.setVisible(true);
             }
         });
-    }//GEN-LAST:event_jMenu3MenuSelected
+    }//GEN-LAST:event_menuCategoriaMenuSelected
 
-    private void jMenu4MenuSelected(javax.swing.event.MenuEvent evt) {//GEN-FIRST:event_jMenu4MenuSelected
+    private void menuProductosMenuSelected(javax.swing.event.MenuEvent evt) {//GEN-FIRST:event_menuProductosMenuSelected
         Productos producto = new Productos();
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 producto.setVisible(true);
             }
         });
-    }//GEN-LAST:event_jMenu4MenuSelected
+    }//GEN-LAST:event_menuProductosMenuSelected
 
-    private void jMenu5MenuSelected(javax.swing.event.MenuEvent evt) {//GEN-FIRST:event_jMenu5MenuSelected
+    private void menuTransaccionesMenuSelected(javax.swing.event.MenuEvent evt) {//GEN-FIRST:event_menuTransaccionesMenuSelected
         Transacciones transacciones = new Transacciones();
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 transacciones.setVisible(true);
             }
         });
-    }//GEN-LAST:event_jMenu5MenuSelected
+    }//GEN-LAST:event_menuTransaccionesMenuSelected
 
-    private void jMenu6MenuSelected(javax.swing.event.MenuEvent evt) {//GEN-FIRST:event_jMenu6MenuSelected
+    private void menuConsultasMenuSelected(javax.swing.event.MenuEvent evt) {//GEN-FIRST:event_menuConsultasMenuSelected
         Consulta consulta = new Consulta();
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 consulta.setVisible(true);
             }
         });
-    }//GEN-LAST:event_jMenu6MenuSelected
+    }//GEN-LAST:event_menuConsultasMenuSelected
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         Imagen imagen = new Imagen();
@@ -195,6 +227,49 @@ public class Principal extends javax.swing.JFrame {
         });
     }//GEN-LAST:event_formWindowOpened
 
+    private void menuVentasMenuSelected(javax.swing.event.MenuEvent evt) {//GEN-FIRST:event_menuVentasMenuSelected
+         // TODO add your handling code here:
+         VentasPanel ventasPanel = new VentasPanel();
+          java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                ventasPanel.setVisible(true);
+            }
+        });
+    }//GEN-LAST:event_menuVentasMenuSelected
+
+    private void MenuClientesMenuSelected(javax.swing.event.MenuEvent evt) {//GEN-FIRST:event_MenuClientesMenuSelected
+        // TODO add your handling code here:
+        Clientes clientePanel = new Clientes();
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                clientePanel.setVisible(true);
+            }
+        });
+    }//GEN-LAST:event_MenuClientesMenuSelected
+  
+    public void configurarRol(String rol) {
+       if (rol.equalsIgnoreCase("Admin") || rol.equalsIgnoreCase("Supervisor")) {
+           MenuClientes.setEnabled(true);
+           menuVentas.setEnabled(true);
+           menuCategoria.setEnabled(true);
+           menuConsultas.setEnabled(true);
+           menuProductos.setEnabled(true);
+           menuTransacciones.setEnabled(true);
+           menuUM.setEnabled(true);
+           menuUsuarios.setEnabled(true);
+       
+        
+    } else if (rol.equalsIgnoreCase("Cajero")) {
+        MenuClientes.setEnabled(false);
+        menuVentas.setEnabled(true);
+        menuCategoria.setEnabled(false);
+        menuConsultas.setEnabled(false);
+        menuProductos.setEnabled(false);
+        menuTransacciones.setEnabled(false);
+        menuUM.setEnabled(false);
+        menuUsuarios.setEnabled(false);
+    }
+}
     
     /**
      * @param args the command line arguments
@@ -226,7 +301,8 @@ public class Principal extends javax.swing.JFrame {
         
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                Principal principal = new Principal();
+                String rolSimulado = "Cajero";
+                Principal principal = new Principal(rolSimulado);
                 principal.setExtendedState(JFrame.MAXIMIZED_BOTH);
                 principal.setVisible(true);
             }
@@ -234,12 +310,14 @@ public class Principal extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenu jMenu3;
-    private javax.swing.JMenu jMenu4;
-    private javax.swing.JMenu jMenu5;
-    private javax.swing.JMenu jMenu6;
+    private javax.swing.JMenu MenuClientes;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenu menuCategoria;
+    private javax.swing.JMenu menuConsultas;
+    private javax.swing.JMenu menuProductos;
+    private javax.swing.JMenu menuTransacciones;
+    private javax.swing.JMenu menuUM;
+    private javax.swing.JMenu menuUsuarios;
+    private javax.swing.JMenu menuVentas;
     // End of variables declaration//GEN-END:variables
 }
