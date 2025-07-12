@@ -64,9 +64,9 @@ public class Productos extends javax.swing.JFrame {
         model.setRowCount(0);
         String sql = "SELECT c.idcodigos, c.sku, c.descripcion, c.existencia, c.costounitario, "
                    + "cat.categoria, um.unidad "
-                   + "FROM codigos c "
-                   + "JOIN categorias cat ON c.categoria = cat.idcategorias "
-                   + "JOIN unidadesmedida um ON c.unidadmedida = um.idunidadesmedida";
+                   + "FROM productos c "
+                   + "JOIN categorias cat ON c.categoria = cat.categorias_idcategorias "
+                   + "JOIN unidadesmedida um ON c.unidadmedida = um.unidadesmedida_idunidadesmedida";
 
         try (Connection conn = new Conexion().estableceConexion(); PreparedStatement pst = conn.prepareStatement(sql); ResultSet rs = pst.executeQuery()) {
             while (rs.next()) {
@@ -207,13 +207,13 @@ public class Productos extends javax.swing.JFrame {
 
         tblProductos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "ID", "SKU", "Descripcion", "Existencia", "Costo", "Categoria"
+                "ID", "SKU", "Descripcion", "Existencia", "Costo Unitario"
             }
         ));
         tblProductos.setRowHeight(25);
