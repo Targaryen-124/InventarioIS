@@ -269,7 +269,7 @@ public class Productos extends javax.swing.JFrame {
         txtSerial.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         btnModificar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        btnModificar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/Edit.png"))); // NOI18N
+        btnModificar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/Refresh.png"))); // NOI18N
         btnModificar.setText("Actualizar");
         btnModificar.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
