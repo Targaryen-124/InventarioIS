@@ -223,7 +223,7 @@ public class Usuarios extends javax.swing.JFrame {
         jScrollPane1.setViewportView(tablaUsuarios);
 
         btnSalir.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        btnSalir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/cancelar-compras.png"))); // NOI18N
+        btnSalir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/Export_2.png"))); // NOI18N
         btnSalir.setText("Salir");
         btnSalir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

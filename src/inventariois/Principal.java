@@ -229,10 +229,10 @@ public class Principal extends javax.swing.JFrame {
 
     private void menuVentasMenuSelected(javax.swing.event.MenuEvent evt) {//GEN-FIRST:event_menuVentasMenuSelected
          // TODO add your handling code here:
-         VentasPanel ventasPanel = new VentasPanel();
+         Ventas ventas = new Ventas();
           java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                ventasPanel.setVisible(true);
+                ventas.setVisible(true);
             }
         });
     }//GEN-LAST:event_menuVentasMenuSelected
