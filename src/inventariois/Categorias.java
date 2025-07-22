@@ -6,6 +6,7 @@ package inventariois;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -13,6 +14,16 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
+import net.sf.jasperreports.engine.util.JRLoader;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
+import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
+import net.sf.jasperreports.view.JasperViewer;
 
 /**
  *
@@ -52,9 +63,12 @@ public class Categorias extends javax.swing.JFrame {
         jBtnDesactivar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tablaCAT = new javax.swing.JTable();
+        btnReportes = new javax.swing.JButton();
+        btnDescargarReporte = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Sistema de Inventario");
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jBtnActualizar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jBtnActualizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/transaccion.png"))); // NOI18N
@@ -64,6 +78,7 @@ public class Categorias extends javax.swing.JFrame {
                 jBtnActualizarActionPerformed(evt);
             }
         });
+        getContentPane().add(jBtnActualizar, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 160, -1, -1));
 
         jBtnCancelar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jBtnCancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/desactivado.png"))); // NOI18N
@@ -73,6 +88,7 @@ public class Categorias extends javax.swing.JFrame {
                 jBtnCancelarActionPerformed(evt);
             }
         });
+        getContentPane().add(jBtnCancelar, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 160, -1, -1));
 
         jPanel4.setBackground(new java.awt.Color(255, 204, 255));
 
@@ -83,10 +99,10 @@ public class Categorias extends javax.swing.JFrame {
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel4)
-                .addGap(239, 239, 239))
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addGap(332, 332, 332)
+                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(395, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -95,8 +111,11 @@ public class Categorias extends javax.swing.JFrame {
                 .addGap(0, 12, Short.MAX_VALUE))
         );
 
+        getContentPane().add(jPanel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 910, -1));
+
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel1.setText("ID:");
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(95, 44, -1, -1));
 
         jTFCodigo.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jTFCodigo.setEnabled(false);
@@ -105,16 +124,21 @@ public class Categorias extends javax.swing.JFrame {
                 jTFCodigoActionPerformed(evt);
             }
         });
+        getContentPane().add(jTFCodigo, new org.netbeans.lib.awtextra.AbsoluteConstraints(243, 44, 160, -1));
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel2.setText("Categoria:");
+        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(85, 88, -1, -1));
 
         jTFCategoria.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        getContentPane().add(jTFCategoria, new org.netbeans.lib.awtextra.AbsoluteConstraints(243, 82, 500, -1));
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel3.setText("Descripcion:");
+        getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(85, 120, -1, -1));
 
         jTFDescripcion.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        getContentPane().add(jTFDescripcion, new org.netbeans.lib.awtextra.AbsoluteConstraints(243, 114, 500, -1));
 
         jBtnAgregar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jBtnAgregar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/guardar-carpeta.png"))); // NOI18N
@@ -124,6 +148,7 @@ public class Categorias extends javax.swing.JFrame {
                 jBtnAgregarActionPerformed(evt);
             }
         });
+        getContentPane().add(jBtnAgregar, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 160, -1, -1));
 
         jBtnDesactivar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jBtnDesactivar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/nota.png"))); // NOI18N
@@ -133,6 +158,7 @@ public class Categorias extends javax.swing.JFrame {
                 jBtnDesactivarActionPerformed(evt);
             }
         });
+        getContentPane().add(jBtnDesactivar, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 160, -1, -1));
 
         tablaCAT.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -152,73 +178,25 @@ public class Categorias extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(tablaCAT);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 94, Short.MAX_VALUE)
-                        .addComponent(jBtnAgregar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jBtnActualizar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jBtnDesactivar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jBtnCancelar)
-                        .addGap(71, 71, 71))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(89, 89, 89)
-                                .addComponent(jLabel1))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(79, 79, 79)
-                                .addComponent(jLabel2))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(79, 79, 79)
-                                .addComponent(jLabel3)))
-                        .addGap(85, 85, 85)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(jTFCategoria, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 337, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jTFDescripcion, javax.swing.GroupLayout.PREFERRED_SIZE, 337, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jTFCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
-            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel3)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jTFCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel1))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jTFCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabel2))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTFDescripcion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jBtnCancelar)
-                    .addComponent(jBtnAgregar)
-                    .addComponent(jBtnActualizar)
-                    .addComponent(jBtnDesactivar))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 328, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 203, 870, 328));
+
+        btnReportes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/Invoice_1.png"))); // NOI18N
+        btnReportes.setText("Reportes");
+        btnReportes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnReportesActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnReportes, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 160, -1, -1));
+
+        btnDescargarReporte.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/Downloading Updates.png"))); // NOI18N
+        btnDescargarReporte.setText("D. Reporte");
+        btnDescargarReporte.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDescargarReporteActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnDescargarReporte, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 160, -1, -1));
 
         pack();
         setLocationRelativeTo(null);
@@ -352,6 +330,95 @@ public class Categorias extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_tablaCATMouseClicked
 
+    private void btnReportesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportesActionPerformed
+        // TODO add your handling code here:
+         try {
+           InputStream jasperStream = getClass().getResourceAsStream("/Reportes/ReporteCategoria.jasper");
+    
+     
+         if (jasperStream == null) {
+             throw new RuntimeException("No se encontró el archivo ReporteCategoria.jasper en el classpath.");
+    }
+
+           JasperReport reporte = (JasperReport) JRLoader.loadObject(jasperStream);
+           Connection conn = new Conexion().estableceConexion();
+ 
+           JasperPrint print = JasperFillManager.fillReport(reporte, null, conn);
+           JasperViewer viewer = new JasperViewer(print, false);
+           viewer.setTitle("Reporte completo de Categorias");
+           viewer.setVisible(true);
+        } catch (Exception e) {
+                e.printStackTrace();
+           JOptionPane.showMessageDialog(this, "Error al mostrar el reporte: " + e.getMessage());
+}
+    }//GEN-LAST:event_btnReportesActionPerformed
+
+    private void btnDescargarReporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDescargarReporteActionPerformed
+        // TODO add your handling code here:
+        Object[] opciones = {"PDF", "Excel"};
+        int opcion = JOptionPane.showOptionDialog(null,
+            "¿Desea descargar el reporte en PDF o Excel?",
+            "Descargar Reporte",
+            JOptionPane.DEFAULT_OPTION,
+            JOptionPane.QUESTION_MESSAGE,
+            null,
+            opciones,
+            opciones[0]);
+
+        if (opcion == 0) {
+            generarReportePDF();  
+        } else if (opcion == 1) {
+            generarReporteExcel(); 
+        }
+    }//GEN-LAST:event_btnDescargarReporteActionPerformed
+
+    public void generarReportePDF() {
+    try {
+        Connection conn = new Conexion().estableceConexion();
+        InputStream rutaReporte = getClass().getResourceAsStream("/Reportes/ReporteCategoria.jasper");
+        JasperReport reporte = (JasperReport) JRLoader.loadObject(rutaReporte);
+
+        JasperPrint print = JasperFillManager.fillReport(reporte, null, conn);
+
+        String rutaSalida = "ReporteCategoria.pdf";
+        JasperExportManager.exportReportToPdfFile(print, rutaSalida);
+
+        JOptionPane.showMessageDialog(null, "Reporte PDF generado correctamente en: " + rutaSalida);
+
+    } catch (Exception ex) {
+        ex.printStackTrace();
+        JOptionPane.showMessageDialog(null, "Error al generar el reporte PDF.");
+    }
+}
+    
+    public void generarReporteExcel() {
+    try {
+        Connection conn = new Conexion().estableceConexion();
+        InputStream rutaReporte = getClass().getResourceAsStream("/Reportes/ReporteCategoria.jasper");
+        JasperReport reporte = (JasperReport) JRLoader.loadObject(rutaReporte);
+
+        JasperPrint print = JasperFillManager.fillReport(reporte, null, conn);
+
+        JRXlsxExporter exporter = new JRXlsxExporter();
+        exporter.setExporterInput(new SimpleExporterInput(print));
+        exporter.setExporterOutput(new SimpleOutputStreamExporterOutput("ReporteCategoria.xlsx"));
+
+        SimpleXlsxReportConfiguration config = new SimpleXlsxReportConfiguration();
+        config.setOnePagePerSheet(false);
+        config.setDetectCellType(true);
+        config.setCollapseRowSpan(false);
+
+        exporter.setConfiguration(config);
+        exporter.exportReport();
+
+        JOptionPane.showMessageDialog(null, "Reporte Excel generado correctamente en: ReporteCategoria.xlsx");
+
+    } catch (Exception ex) {
+        ex.printStackTrace();
+        JOptionPane.showMessageDialog(null, "Error al generar el reporte Excel.");
+    }
+}
+    
     /**
      * @param args the command line arguments
      */
@@ -389,6 +456,8 @@ public class Categorias extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnDescargarReporte;
+    private javax.swing.JButton btnReportes;
     private javax.swing.JButton jBtnActualizar;
     private javax.swing.JButton jBtnAgregar;
     private javax.swing.JButton jBtnCancelar;

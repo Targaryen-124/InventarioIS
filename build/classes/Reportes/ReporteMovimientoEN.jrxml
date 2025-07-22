@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ReporteMovimiento" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="d9254403-9e0a-491a-8525-4c2b6ae83fe8">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Title" fontName="Arial" fontSize="26" isBold="true" pdfFontName="Helvetica-Bold"/>
+	<style name="SubTitle" forecolor="#666666" fontName="Arial" fontSize="18"/>
+	<style name="Column header" forecolor="#666666" fontName="Arial" fontSize="12" isBold="true"/>
+	<style name="Detail" fontName="Arial" fontSize="12"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT
+     movimientos.`idmovimientos` AS movimientos_idmovimientos,
+     movimientos.`idcodigos` AS movimientos_idcodigos,
+     movimientos.`fecha` AS movimientos_fecha,
+     movimientos.`tipomovimiento` AS movimientos_tipomovimiento,
+     movimientos.`cantidad` AS movimientos_cantidad,
+     movimientos.`usuario` AS movimientos_usuario
+FROM
+     `movimientos` movimientos]]>
+	</queryString>
+	<field name="movimientos_idmovimientos" class="java.lang.Integer"/>
+	<field name="movimientos_idcodigos" class="java.lang.Integer"/>
+	<field name="movimientos_fecha" class="java.sql.Timestamp"/>
+	<field name="movimientos_tipomovimiento" class="java.lang.String"/>
+	<field name="movimientos_cantidad" class="java.lang.String"/>
+	<field name="movimientos_usuario" class="java.lang.Integer"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="70" splitType="Stretch">
+			<staticText>
+				<reportElement style="Title" x="0" y="13" width="308" height="33" uuid="de92e3df-1f8f-4fe2-8822-ff8b97f80a22"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Reporte de Movimientos]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="36" splitType="Stretch">
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="35" width="555" height="1" uuid="687f677f-3113-48cd-93c8-de6534e2540c"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+			<staticText>
+				<reportElement style="Column header" x="0" y="19" width="92" height="15" uuid="534e6f30-8782-4e63-8727-02905e099b85"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[IDmovimientos]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="92" y="19" width="92" height="15" uuid="36ed37cf-9c5d-4514-8469-b98a30f48ead"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[IDcodigos]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="184" y="19" width="92" height="15" uuid="f1495a4d-cb47-4bee-a56b-de2694ee058e"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Fecha]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="259" y="19" width="109" height="15" uuid="ac3aa3f6-8446-454c-b2eb-82396f58a26e"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Tipomovimiento]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="368" y="19" width="92" height="15" uuid="b333f6b9-fed0-4279-b9ad-96058f9146ec"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Cantidad]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="Column header" x="460" y="19" width="92" height="15" uuid="ae70d5d7-76bf-4b25-9d65-b9767b6cc9ba"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Usuario]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="16" splitType="Stretch">
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="15" width="555" height="1" uuid="0ad29ced-7cdb-4fa3-bac2-35032132a063"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+			<textField>
+				<reportElement style="Detail" x="0" y="0" width="92" height="15" uuid="8be713dd-c2ed-4d30-9b64-a950694414f3"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{movimientos_idmovimientos}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Detail" x="92" y="0" width="92" height="15" uuid="6d3450b4-1553-4db7-89c8-bdb1250fe222"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{movimientos_idcodigos}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Detail" x="184" y="0" width="92" height="15" uuid="892b35e4-0876-4ff1-aa5b-f72407e20d06"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{movimientos_fecha}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Detail" x="276" y="0" width="92" height="15" uuid="4afdcec6-620a-4b72-8cbf-ee9d1526c518"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{movimientos_tipomovimiento}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Detail" x="368" y="0" width="92" height="15" uuid="6c7ebf66-6dd6-41c5-8c9c-3fad5f4e22ae"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{movimientos_cantidad}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="Detail" x="460" y="0" width="92" height="15" uuid="d2ba9a5f-5cd4-403a-9cb6-255dfbac6476"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{movimientos_usuario}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch">
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="3" width="555" height="1" uuid="e28c0e73-253a-4f50-86d6-07d422a07d2c"/>
+				<graphicElement>
+					<pen lineWidth="0.5" lineColor="#999999"/>
+				</graphicElement>
+			</line>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement style="Column header" x="433" y="0" width="80" height="20" uuid="c7047d4b-4f06-4aa9-876b-65a983f60fef"/>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement style="Column header" x="513" y="0" width="40" height="20" uuid="70c7d4f0-9e49-43fb-bd19-c9c89359b83f"/>
+				<textElement>
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement style="Column header" x="0" y="0" width="197" height="20" uuid="1a785270-23b3-40ae-a14a-bcf1ad4874a8"/>
+				<textElement>
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

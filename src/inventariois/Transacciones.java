@@ -4,12 +4,25 @@
  */
 package inventariois;
 
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.*;
 import javax.swing.JOptionPane;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
+import net.sf.jasperreports.engine.util.JRLoader;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
+import net.sf.jasperreports.export.SimpleXlsxReportConfiguration;
+import net.sf.jasperreports.view.JasperViewer;
 
 /**
  *
@@ -95,6 +108,10 @@ public class Transacciones extends javax.swing.JFrame {
         btnCancelar = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
+        btnReporteSalida = new javax.swing.JButton();
+        btnReporteEntrada = new javax.swing.JButton();
+        btnReportes = new javax.swing.JButton();
+        btnDescargarReportes = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Sistema de Inventario");
@@ -103,16 +120,20 @@ public class Transacciones extends javax.swing.JFrame {
                 formWindowOpened(evt);
             }
         });
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204), 2));
 
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(204, 204, 204)));
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel1.setText("SKU:");
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(96, 25, -1, -1));
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel3.setText("Descripcion:");
+        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(96, 63, -1, -1));
 
         cboItems.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         cboItems.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
@@ -126,66 +147,26 @@ public class Transacciones extends javax.swing.JFrame {
                 cboItemsActionPerformed(evt);
             }
         });
+        jPanel1.add(cboItems, new org.netbeans.lib.awtextra.AbsoluteConstraints(183, 1, 385, 40));
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel4.setText("Cantidad:");
+        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(96, 126, -1, -1));
 
         spinnerUno.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jPanel1.add(spinnerUno, new org.netbeans.lib.awtextra.AbsoluteConstraints(183, 119, 203, 34));
 
         txtDescripcion.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         txtDescripcion.setEnabled(false);
+        jPanel1.add(txtDescripcion, new org.netbeans.lib.awtextra.AbsoluteConstraints(183, 63, 385, 38));
 
         cboTransaccion.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         cboTransaccion.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Entrada", "Salida" }));
+        jPanel1.add(cboTransaccion, new org.netbeans.lib.awtextra.AbsoluteConstraints(183, 218, 203, 35));
 
         jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel5.setText("Transaccion:");
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(89, 89, 89)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(6, 6, 6)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel4)
-                            .addComponent(jLabel1)))
-                    .addComponent(jLabel5))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(cboItems, 0, 385, Short.MAX_VALUE)
-                        .addComponent(txtDescripcion)
-                        .addComponent(spinnerUno, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(cboTransaccion, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(346, 346, 346))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(24, 24, 24)
-                        .addComponent(jLabel1))
-                    .addComponent(cboItems, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel3)
-                    .addComponent(txtDescripcion, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(spinnerUno, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 65, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(cboTransaccion, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(86, 86, 86))
-        );
+        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 225, -1, -1));
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -193,16 +174,18 @@ public class Transacciones extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 911, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 358, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        getContentPane().add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 50, -1, -1));
 
         btnGuardar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/guardar-carpeta.png"))); // NOI18N
@@ -212,6 +195,7 @@ public class Transacciones extends javax.swing.JFrame {
                 btnGuardarActionPerformed(evt);
             }
         });
+        getContentPane().add(btnGuardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(646, 433, -1, -1));
 
         btnCancelar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnCancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/desactivado.png"))); // NOI18N
@@ -221,6 +205,7 @@ public class Transacciones extends javax.swing.JFrame {
                 btnCancelarActionPerformed(evt);
             }
         });
+        getContentPane().add(btnCancelar, new org.netbeans.lib.awtextra.AbsoluteConstraints(807, 433, -1, -1));
 
         jPanel2.setBackground(new java.awt.Color(255, 204, 255));
 
@@ -234,7 +219,7 @@ public class Transacciones extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(382, 382, 382)
                 .addComponent(jLabel2)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(446, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -244,34 +229,41 @@ public class Transacciones extends javax.swing.JFrame {
                 .addContainerGap(18, Short.MAX_VALUE))
         );
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(btnGuardar)
-                .addGap(45, 45, 45)
-                .addComponent(btnCancelar)
-                .addGap(18, 18, 18))
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnCancelar)
-                    .addComponent(btnGuardar))
-                .addGap(28, 28, 28))
-        );
+        getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 943, -1));
+
+        btnReporteSalida.setText("Reporte SA");
+        btnReporteSalida.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnReporteSalidaActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnReporteSalida, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 440, -1, -1));
+
+        btnReporteEntrada.setText("Reporte EN");
+        btnReporteEntrada.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnReporteEntradaActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnReporteEntrada, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 440, -1, -1));
+
+        btnReportes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/Invoice_1.png"))); // NOI18N
+        btnReportes.setText("Reportes");
+        btnReportes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnReportesActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnReportes, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 430, -1, -1));
+
+        btnDescargarReportes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/Downloading Updates.png"))); // NOI18N
+        btnDescargarReportes.setText("Descargar R");
+        btnDescargarReportes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDescargarReportesActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnDescargarReportes, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 430, -1, -1));
 
         pack();
         setLocationRelativeTo(null);
@@ -324,8 +316,247 @@ public class Transacciones extends javax.swing.JFrame {
 
     private void cboItemsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboItemsActionPerformed
         // TODO add your handling code here:
+        
     }//GEN-LAST:event_cboItemsActionPerformed
+
+    private void btnReporteEntradaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReporteEntradaActionPerformed
+        // TODO add your handling code here:
+         int opcion = JOptionPane.showOptionDialog(
+        null,
+        "¿Qué tipo de entrada desea visualizar?",
+        "Filtro de Reporte",
+        JOptionPane.DEFAULT_OPTION,
+        JOptionPane.QUESTION_MESSAGE,
+        null,
+        new String[] {"Por fecha", "Todas"},
+        "Todas"
+    );
+
+    Connection conn = new Conexion().estableceConexion();
+
+    if (opcion == 0) { // Por fecha
+        String fechaStr = JOptionPane.showInputDialog("Ingrese la fecha (YYYY-MM-DD):");
+        if (fechaStr != null && !fechaStr.trim().isEmpty()) {
+            try {
+                java.sql.Date fecha = java.sql.Date.valueOf(fechaStr.trim());
+                Map<String, Object> parametros = new HashMap<>();
+                parametros.put("fecha", fecha);
+
+                InputStream jasperStream = getClass().getResourceAsStream("/Reportes/ReporteMovimientoFE.jasper");
+                JasperReport reporte = (JasperReport) JRLoader.loadObject(jasperStream);
+
+                JasperPrint print = JasperFillManager.fillReport(reporte, parametros, conn);
+                JasperViewer viewer = new JasperViewer(print, false);
+                viewer.setTitle("Reporte por Fecha de Movimiento");
+                viewer.setVisible(true);
+
+            } catch (IllegalArgumentException ex) {
+                JOptionPane.showMessageDialog(null, "Formato de fecha inválido. Use YYYY-MM-DD");
+            } catch (Exception e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Error al generar el reporte.");
+            }
+        }
+    } else if (opcion == 1) { // Todas
+        try {
+            InputStream jasperStream = getClass().getResourceAsStream("/Reportes/ReporteMovimientoET.jasper");
+            JasperReport reporte = (JasperReport) JRLoader.loadObject(jasperStream);
+
+            JasperPrint print = JasperFillManager.fillReport(reporte, null, conn);
+            JasperViewer viewer = new JasperViewer(print, false);
+            viewer.setTitle("Reporte completo de Movimiento");
+            viewer.setVisible(true);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error al generar el reporte.");
+        }
+    }
+
+    }//GEN-LAST:event_btnReporteEntradaActionPerformed
+
+    private void btnReportesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReportesActionPerformed
+        // TODO add your handling code here:
+        try {
+           InputStream jasperStream = getClass().getResourceAsStream("/Reportes/ReporteMovimientoEN.jasper");
+    
      
+         if (jasperStream == null) {
+             throw new RuntimeException("No se encontró el archivo ReporteMovimientoEN.jasper en el classpath.");
+    }
+
+           JasperReport reporte = (JasperReport) JRLoader.loadObject(jasperStream);
+           Connection conn = new Conexion().estableceConexion();
+ 
+           JasperPrint print = JasperFillManager.fillReport(reporte, null, conn);
+           JasperViewer viewer = new JasperViewer(print, false);
+           viewer.setTitle("Reporte completo de Movimiento");
+           viewer.setVisible(true);
+        } catch (Exception e) {
+                e.printStackTrace();
+           JOptionPane.showMessageDialog(this, "Error al mostrar el reporte: " + e.getMessage());
+}
+    }//GEN-LAST:event_btnReportesActionPerformed
+
+    private void btnReporteSalidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReporteSalidaActionPerformed
+        // TODO add your handling code here:
+         int opcion = JOptionPane.showOptionDialog(
+        null,
+        "¿Qué tipo de salida desea visualizar?",
+        "Filtro de Reporte",
+        JOptionPane.DEFAULT_OPTION,
+        JOptionPane.QUESTION_MESSAGE,
+        null,
+        new String[] {"Por fecha", "Todas"},
+        "Todas"
+    );
+
+    Connection conn = new Conexion().estableceConexion();
+
+    if (opcion == 0) { // Por fecha
+        String fechaStr = JOptionPane.showInputDialog("Ingrese la fecha (YYYY-MM-DD):");
+        if (fechaStr != null && !fechaStr.trim().isEmpty()) {
+            try {
+                java.sql.Date fecha = java.sql.Date.valueOf(fechaStr.trim());
+                Map<String, Object> parametros = new HashMap<>();
+                parametros.put("fecha", fecha);
+
+                InputStream jasperStream = getClass().getResourceAsStream("/Reportes/ReporteMovimientoFS.jasper");
+                JasperReport reporte = (JasperReport) JRLoader.loadObject(jasperStream);
+
+                JasperPrint print = JasperFillManager.fillReport(reporte, parametros, conn);
+                JasperViewer viewer = new JasperViewer(print, false);
+                viewer.setTitle("Reporte por Fecha de Movimiento");
+                viewer.setVisible(true);
+
+            } catch (IllegalArgumentException ex) {
+                JOptionPane.showMessageDialog(null, "Formato de fecha inválido. Use YYYY-MM-DD");
+            } catch (Exception e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Error al generar el reporte.");
+            }
+        }
+    } else if (opcion == 1) { // Todas
+        try {
+            InputStream jasperStream = getClass().getResourceAsStream("/Reportes/ReporteMovimientoSA.jasper");
+            JasperReport reporte = (JasperReport) JRLoader.loadObject(jasperStream);
+
+            JasperPrint print = JasperFillManager.fillReport(reporte, null, conn);
+            JasperViewer viewer = new JasperViewer(print, false);
+            viewer.setTitle("Reporte completo de Movimiento");
+            viewer.setVisible(true);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error al generar el reporte.");
+        }
+    }
+    }//GEN-LAST:event_btnReporteSalidaActionPerformed
+
+    private void btnDescargarReportesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDescargarReportesActionPerformed
+        // TODO add your handling code here:
+        try {
+            // PRIMERA PREGUNTA: Tipo de Reporte
+            String[] opcionesReporte = {"Entradas", "Salidas", "Todo"};
+            String tipoReporte = (String) JOptionPane.showInputDialog(
+                null,
+                "¿Qué tipo de reporte deseas descargar?",
+                "Tipo de Reporte",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                opcionesReporte,
+                opcionesReporte[0]
+            );
+
+             Connection conn = new Conexion().estableceConexion();
+             
+            if (tipoReporte == null) return; // Cancelado
+
+            // SEGUNDA PREGUNTA: Por Fecha o Todo
+            String[] opcionesFiltro = {"Por Fecha", "Todo"};
+            String filtro = (String) JOptionPane.showInputDialog(
+                null,
+                "¿Deseas filtrar por fecha o ver todo?",
+                "Filtro",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                opcionesFiltro,
+                opcionesFiltro[0]
+            );
+
+            if (filtro == null) return;
+
+            Map<String, Object> parametros = new HashMap<>();
+
+            String rutaReporte = "";
+
+            if (tipoReporte.equals("Entradas")) {
+                if (filtro.equals("Por Fecha")) {
+                    String fecha = JOptionPane.showInputDialog("Ingrese la fecha (YYYY-MM-DD):");
+                    if (fecha == null || fecha.isEmpty()) return;
+                    parametros.put("fecha", fecha);
+                    rutaReporte = "src/Reportes/ReporteMovimientoFE.jasper";
+                } else {
+                    rutaReporte = "src/Reportes/ReporteMovimientoET.jasper";
+                }
+            } else if (tipoReporte.equals("Salidas")) {
+                if (filtro.equals("Por Fecha")) {
+                    String fecha = JOptionPane.showInputDialog("Ingrese la fecha (YYYY-MM-DD):");
+                    if (fecha == null || fecha.isEmpty()) return;
+                    parametros.put("fecha", fecha);
+                    rutaReporte = "src/Reportes/ReporteMovimientoFS.jasper";
+                } else {
+                    rutaReporte = "src/Reportes/ReporteMovimientoSA.jasper";
+                }
+            } else if (tipoReporte.equals("Todo")) {
+                rutaReporte = "src/Reportes/ReporteMovimientoEN.jasper";
+            }
+
+            // TERCERA PREGUNTA: Formato
+            String[] opcionesFormato = {"PDF", "Excel"};
+            String formato = (String) JOptionPane.showInputDialog(
+                null,
+                "¿En qué formato deseas el reporte?",
+                "Formato de Exportación",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                opcionesFormato,
+                opcionesFormato[0]
+            );
+
+            if (formato == null) return;
+
+            // Cargar el reporte
+            JasperPrint print = JasperFillManager.fillReport(rutaReporte, parametros, conn);
+
+            // Ruta de salida
+            String archivoSalida = "Reporte_" + tipoReporte + "_" + System.currentTimeMillis();
+
+            if (formato.equals("PDF")) {
+                JasperExportManager.exportReportToPdfFile(print, archivoSalida + ".pdf");
+                JOptionPane.showMessageDialog(null, "¡Reporte exportado como PDF exitosamente!");
+            } else if (formato.equals("Excel")) {
+                JRXlsxExporter exporter = new JRXlsxExporter();
+                exporter.setExporterInput(new SimpleExporterInput(print));
+                exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(archivoSalida + ".xlsx"));
+
+                SimpleXlsxReportConfiguration configuration = new SimpleXlsxReportConfiguration();
+                configuration.setOnePagePerSheet(false);
+                configuration.setDetectCellType(true);
+                configuration.setCollapseRowSpan(false);
+                exporter.setConfiguration(configuration);
+
+                exporter.exportReport();
+                JOptionPane.showMessageDialog(null, "¡Reporte exportado como Excel exitosamente!");
+            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Error al generar el reporte: " + ex.getMessage());
+        }
+    
+    }//GEN-LAST:event_btnDescargarReportesActionPerformed
+    
     private void cargarproducto() {
         Connection conn = null;
         try {
@@ -391,7 +622,11 @@ public class Transacciones extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancelar;
+    private javax.swing.JButton btnDescargarReportes;
     private javax.swing.JButton btnGuardar;
+    private javax.swing.JButton btnReporteEntrada;
+    private javax.swing.JButton btnReporteSalida;
+    private javax.swing.JButton btnReportes;
     private javax.swing.JComboBox<String> cboItems;
     private javax.swing.JComboBox<String> cboTransaccion;
     private javax.swing.JLabel jLabel1;

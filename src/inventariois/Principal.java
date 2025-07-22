@@ -49,6 +49,7 @@ public class Principal extends javax.swing.JFrame {
                 formWindowOpened(evt);
             }
         });
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         menuUsuarios.setText("Usuarios");
         menuUsuarios.addMenuListener(new javax.swing.event.MenuListener() {
@@ -147,17 +148,6 @@ public class Principal extends javax.swing.JFrame {
         jMenuBar1.add(MenuClientes);
 
         setJMenuBar(jMenuBar1);
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 906, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 604, Short.MAX_VALUE)
-        );
 
         pack();
         setLocationRelativeTo(null);
