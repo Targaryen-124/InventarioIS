@@ -4,6 +4,13 @@
  */
 package inventariois;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author Yohana Padilla
@@ -15,6 +22,53 @@ public class Ventas extends javax.swing.JFrame {
      */
     public Ventas() {
         initComponents();
+        cargarClientes();
+        cargarProductos();
+        generarID();
+    }
+    
+    private void generarID() {
+        try (Connection conn = new Conexion().estableceConexion();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery("SELECT MAX(id) AS max_id FROM ventasencabezado")) {
+            
+            if (rs.next()) {
+                int maxId = rs.getInt("max_id");
+                jTFCodigo.setText(String.valueOf(maxId + 1)); // Incrementar el ID
+                txtCantidad.setText("");
+                txtProducto.setText("");
+                jCBSKU.setSelectedIndex(-1);
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error al generar ID: " + e.getMessage());
+        }
+    }
+    
+    private void cargarClientes() {
+        jCBCid.removeAllItems(); // Limpiar el ComboBox antes de llenarlo
+        String sql = "SELECT id, identidad FROM clientes";
+
+        try (Connection conn = new Conexion().estableceConexion(); PreparedStatement pst = conn.prepareStatement(sql); ResultSet rs = pst.executeQuery()) {
+            while (rs.next()) {
+                jCBCid.addItem(rs.getString("identidad")); // Agregar la unidad al ComboBox
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error al cargar clientes: " + e.getMessage());
+        }
+    }
+    
+    private void cargarProductos() {
+        jCBSKU.removeAllItems(); // Limpiar el ComboBox antes de llenarlo
+        String sql = "SELECT idcodigos, sku, descripcion FROM productos"; // Asegúrate de que la consulta incluya la categoría
+        try (Connection conn = new Conexion().estableceConexion(); PreparedStatement pst = conn.prepareStatement(sql); ResultSet rs = pst.executeQuery()) {
+            while (rs.next()) {
+                String descripcion = rs.getString("descripcion");
+                String sku = rs.getString("sku");
+                jCBSKU.addItem(descripcion + " - " + sku); // Agregar la unidad al ComboBox
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error al cargar productos: " + e.getMessage());
+        }
     }
 
     /**
@@ -30,13 +84,11 @@ public class Ventas extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        txtCategoria = new javax.swing.JTextField();
         txtCantidad = new javax.swing.JTextField();
         btnEliminar = new javax.swing.JButton();
         btnActualizar = new javax.swing.JButton();
-        btnGuardar = new javax.swing.JButton();
+        btnAgregar = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
         jTFCodigo = new javax.swing.JTextField();
         jCBCid = new javax.swing.JComboBox<>();
@@ -72,22 +124,9 @@ public class Ventas extends javax.swing.JFrame {
         jLabel3.setText("Cantidad:");
         jPanel2.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 120, -1, -1));
 
-        jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel4.setText("Categoria:");
-        jPanel2.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 150, -1, -1));
-
         jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel5.setText("Cliente ID:");
         jPanel2.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 30, -1, -1));
-
-        txtCategoria.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        txtCategoria.setEnabled(false);
-        txtCategoria.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtCategoriaActionPerformed(evt);
-            }
-        });
-        jPanel2.add(txtCategoria, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 150, 340, -1));
 
         txtCantidad.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         txtCantidad.addActionListener(new java.awt.event.ActionListener() {
@@ -100,6 +139,11 @@ public class Ventas extends javax.swing.JFrame {
         btnEliminar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/desactivado.png"))); // NOI18N
         btnEliminar.setText("Eliminar");
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
         jPanel2.add(btnEliminar, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 200, -1, 40));
 
         btnActualizar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -112,20 +156,21 @@ public class Ventas extends javax.swing.JFrame {
         });
         jPanel2.add(btnActualizar, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 200, -1, 40));
 
-        btnGuardar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/Edit.png"))); // NOI18N
-        btnGuardar.setText("Agregar");
-        btnGuardar.addActionListener(new java.awt.event.ActionListener() {
+        btnAgregar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/Edit.png"))); // NOI18N
+        btnAgregar.setText("Agregar");
+        btnAgregar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGuardarActionPerformed(evt);
+                btnAgregarActionPerformed(evt);
             }
         });
-        jPanel2.add(btnGuardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 200, -1, 40));
+        jPanel2.add(btnAgregar, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 200, -1, 40));
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel6.setText("FACTURA # ");
         jPanel2.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(520, 10, -1, -1));
 
-        jTFCodigo.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jTFCodigo.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jTFCodigo.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         jTFCodigo.setEnabled(false);
         jTFCodigo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -136,11 +181,18 @@ public class Ventas extends javax.swing.JFrame {
 
         jCBCid.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jCBCid.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jCBCid.setSelectedIndex(-1);
         jPanel2.add(jCBCid, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 30, 200, -1));
 
         jCBSKU.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jCBSKU.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        jPanel2.add(jCBSKU, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 60, 200, -1));
+        jCBSKU.setSelectedIndex(-1);
+        jCBSKU.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCBSKUActionPerformed(evt);
+            }
+        });
+        jPanel2.add(jCBSKU, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 60, 410, -1));
 
         txtProducto.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         txtProducto.setEnabled(false);
@@ -149,7 +201,7 @@ public class Ventas extends javax.swing.JFrame {
                 txtProductoActionPerformed(evt);
             }
         });
-        jPanel2.add(txtProducto, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 90, 340, -1));
+        jPanel2.add(txtProducto, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 90, 410, -1));
 
         getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 44, 704, 252));
 
@@ -165,7 +217,7 @@ public class Ventas extends javax.swing.JFrame {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGap(432, 432, 432)
                 .addComponent(jLabel7)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(447, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -178,10 +230,7 @@ public class Ventas extends javax.swing.JFrame {
 
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+
             },
             new String [] {
                 "SKU", "Descripcion", "Cantidad", "Precio", "Total"
@@ -246,12 +295,11 @@ public class Ventas extends javax.swing.JFrame {
         getContentPane().add(btnImprimirFactura, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 534, 180, 40));
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txtCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCategoriaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtCategoriaActionPerformed
-
+    
+    
     private void txtCantidadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCantidadActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtCantidadActionPerformed
@@ -260,9 +308,48 @@ public class Ventas extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_btnActualizarActionPerformed
 
-    private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnGuardarActionPerformed
+    private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
+        // Obtener el SKU y la descripción del producto seleccionado
+        String selectedItem = (String) jCBSKU.getSelectedItem();
+        if (selectedItem != null) {
+            String[] parts = selectedItem.split(" - ");
+            String descripcion = parts[0]; // Descripción
+            String sku = parts[1]; // SKU
+            // Obtener la cantidad
+            int cantidad;
+            try {
+                cantidad = Integer.parseInt(txtCantidad.getText());
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "Por favor, ingrese una cantidad válida.");
+                return;
+            }
+
+            // Obtener el precio del producto desde la base de datos
+            double precio = 0.0;
+            String sql = "SELECT costounitario FROM productos WHERE sku = ?";
+            try (Connection conn = new Conexion().estableceConexion(); 
+                 PreparedStatement pst = conn.prepareStatement(sql)) {
+                pst.setString(1, sku);
+                ResultSet rs = pst.executeQuery();
+                if (rs.next()) {
+                    precio = rs.getDouble("costounitario");
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Error al obtener el precio: " + e.getMessage());
+                return;
+            }
+
+            // Calcular el total
+            double total = cantidad * precio;
+            // Agregar los datos a la tabla
+            DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
+            model.insertRow(0, new Object[]{sku, descripcion, cantidad, precio, total}); // Insertar en la primera posición
+            // Limpiar los campos después de agregar
+            txtCantidad.setText("");
+            txtProducto.setText("");
+            jCBSKU.setSelectedIndex(-1);
+        }
+    }//GEN-LAST:event_btnAgregarActionPerformed
 
     private void btnFinalizarCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFinalizarCompraActionPerformed
         // TODO add your handling code here:
@@ -284,6 +371,34 @@ public class Ventas extends javax.swing.JFrame {
     private void txtProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtProductoActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtProductoActionPerformed
+
+    private void jCBSKUActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCBSKUActionPerformed
+        String selectedItem = (String) jCBSKU.getSelectedItem();
+        if (selectedItem != null) {
+            // Separar la descripción y la categoría
+            String[] parts = selectedItem.split(" - ");
+            if (parts.length >= 1) {
+                txtProducto.setText(parts[0]); // Descripción
+            }
+        }
+    }//GEN-LAST:event_jCBSKUActionPerformed
+
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        // Obtener el modelo de la tabla
+        DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
+
+        // Obtener la fila seleccionada
+        int selectedRow = jTable2.getSelectedRow();
+
+        // Verificar si hay una fila seleccionada
+        if (selectedRow != -1) {
+            // Eliminar la fila seleccionada
+            model.removeRow(selectedRow);
+        } else {
+            // Mostrar un mensaje si no hay fila seleccionada
+            JOptionPane.showMessageDialog(this, "Por favor, seleccione una fila para eliminar.");
+        }
+    }//GEN-LAST:event_btnEliminarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -322,10 +437,10 @@ public class Ventas extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnActualizar;
+    private javax.swing.JButton btnAgregar;
     private javax.swing.JButton btnCalcular;
     private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnFinalizarCompra;
-    private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnImprimirFactura;
     private javax.swing.JButton btnSalir;
     private javax.swing.JComboBox<String> jCBCid;
@@ -334,7 +449,6 @@ public class Ventas extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
@@ -345,7 +459,6 @@ public class Ventas extends javax.swing.JFrame {
     private javax.swing.JTextField jTFCodigo;
     private javax.swing.JTable jTable2;
     private javax.swing.JTextField txtCantidad;
-    private javax.swing.JTextField txtCategoria;
     private javax.swing.JTextField txtPago;
     private javax.swing.JTextField txtProducto;
     // End of variables declaration//GEN-END:variables
