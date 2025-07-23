@@ -94,6 +94,7 @@ public class Ventas extends javax.swing.JFrame {
         jCBCid = new javax.swing.JComboBox<>();
         jCBSKU = new javax.swing.JComboBox<>();
         txtProducto = new javax.swing.JTextField();
+        jLblpuntos = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -105,6 +106,10 @@ public class Ventas extends javax.swing.JFrame {
         btnCalcular = new javax.swing.JButton();
         btnSalir = new javax.swing.JButton();
         btnImprimirFactura = new javax.swing.JButton();
+        jLabeTotalAPagar1 = new javax.swing.JLabel();
+        jLabeTotalAPagar3 = new javax.swing.JLabel();
+        jTFDescuento = new javax.swing.JTextField();
+        jLabeTotalAPagar4 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -182,6 +187,11 @@ public class Ventas extends javax.swing.JFrame {
         jCBCid.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jCBCid.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         jCBCid.setSelectedIndex(-1);
+        jCBCid.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCBCidActionPerformed(evt);
+            }
+        });
         jPanel2.add(jCBCid, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 30, 200, -1));
 
         jCBSKU.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -202,6 +212,11 @@ public class Ventas extends javax.swing.JFrame {
             }
         });
         jPanel2.add(txtProducto, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 90, 410, -1));
+
+        jLblpuntos.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLblpuntos.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLblpuntos.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
+        jPanel2.add(jLblpuntos, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 30, 120, 30));
 
         getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 44, 704, 252));
 
@@ -260,15 +275,15 @@ public class Ventas extends javax.swing.JFrame {
 
         jLabeTotalAPagar.setText("L.");
         jLabeTotalAPagar.setBorder(javax.swing.BorderFactory.createTitledBorder("Total a Pagar"));
-        getContentPane().add(jLabeTotalAPagar, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 102, 200, 70));
+        getContentPane().add(jLabeTotalAPagar, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 300, 200, 60));
 
         txtPago.setText("L.");
         txtPago.setBorder(javax.swing.BorderFactory.createTitledBorder("Pago"));
-        getContentPane().add(txtPago, new org.netbeans.lib.awtextra.AbsoluteConstraints(820, 190, 190, 70));
+        getContentPane().add(txtPago, new org.netbeans.lib.awtextra.AbsoluteConstraints(820, 370, 190, 60));
 
         jLabelCambio.setText("L.");
         jLabelCambio.setBorder(javax.swing.BorderFactory.createTitledBorder("Cambio"));
-        getContentPane().add(jLabelCambio, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 278, 180, 70));
+        getContentPane().add(jLabelCambio, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 430, 180, 60));
 
         btnCalcular.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnCalcular.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/Estimate.png"))); // NOI18N
@@ -278,7 +293,7 @@ public class Ventas extends javax.swing.JFrame {
                 btnCalcularActionPerformed(evt);
             }
         });
-        getContentPane().add(btnCalcular, new org.netbeans.lib.awtextra.AbsoluteConstraints(880, 366, 130, 40));
+        getContentPane().add(btnCalcular, new org.netbeans.lib.awtextra.AbsoluteConstraints(880, 260, 130, 40));
 
         btnSalir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/Export_2.png"))); // NOI18N
         btnSalir.setText("Salir");
@@ -293,6 +308,19 @@ public class Ventas extends javax.swing.JFrame {
         btnImprimirFactura.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/Invoice_3.png"))); // NOI18N
         btnImprimirFactura.setText("Imprimir Factura");
         getContentPane().add(btnImprimirFactura, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 534, 180, 40));
+
+        jLabeTotalAPagar1.setText("L.");
+        jLabeTotalAPagar1.setBorder(javax.swing.BorderFactory.createTitledBorder("Impuesto"));
+        getContentPane().add(jLabeTotalAPagar1, new org.netbeans.lib.awtextra.AbsoluteConstraints(810, 200, 200, 50));
+
+        jLabeTotalAPagar3.setText("L.");
+        jLabeTotalAPagar3.setBorder(javax.swing.BorderFactory.createTitledBorder("Descuento"));
+        getContentPane().add(jLabeTotalAPagar3, new org.netbeans.lib.awtextra.AbsoluteConstraints(810, 150, 200, 50));
+        getContentPane().add(jTFDescuento, new org.netbeans.lib.awtextra.AbsoluteConstraints(880, 160, 120, 30));
+
+        jLabeTotalAPagar4.setText("L.");
+        jLabeTotalAPagar4.setBorder(javax.swing.BorderFactory.createTitledBorder("Subtotal"));
+        getContentPane().add(jLabeTotalAPagar4, new org.netbeans.lib.awtextra.AbsoluteConstraints(810, 100, 200, 50));
 
         pack();
         setLocationRelativeTo(null);
@@ -400,6 +428,25 @@ public class Ventas extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnEliminarActionPerformed
 
+    private void jCBCidActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCBCidActionPerformed
+        String selectedItem = (String) jCBCid.getSelectedItem();
+        if (selectedItem != null) {
+            // Obtener el ID del cliente basado en la identidad seleccionada
+            String sql = "SELECT puntos FROM clientes WHERE identidad = ?";
+            try (Connection conn = new Conexion().estableceConexion(); 
+                 PreparedStatement pst = conn.prepareStatement(sql)) {
+                pst.setString(1, selectedItem);
+                ResultSet rs = pst.executeQuery();
+                if (rs.next()) {
+                    int puntos = rs.getInt("puntos");
+                    jLblpuntos.setText("Puntos: " + puntos); // Actualizar el JLabel con los puntos
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Error al cargar puntos: " + e.getMessage());
+            }
+        }
+    }//GEN-LAST:event_jCBCidActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -446,6 +493,9 @@ public class Ventas extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> jCBCid;
     private javax.swing.JComboBox<String> jCBSKU;
     private javax.swing.JLabel jLabeTotalAPagar;
+    private javax.swing.JLabel jLabeTotalAPagar1;
+    private javax.swing.JLabel jLabeTotalAPagar3;
+    private javax.swing.JLabel jLabeTotalAPagar4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -453,10 +503,12 @@ public class Ventas extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabelCambio;
+    private javax.swing.JLabel jLblpuntos;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField jTFCodigo;
+    private javax.swing.JTextField jTFDescuento;
     private javax.swing.JTable jTable2;
     private javax.swing.JTextField txtCantidad;
     private javax.swing.JTextField txtPago;
