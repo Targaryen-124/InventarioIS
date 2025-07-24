@@ -390,6 +390,33 @@ public class Ventas extends javax.swing.JFrame {
             // Handle the case where the discount is not a valid number
             descuento = 0.0;
         }
+
+        // Get the current points for the selected client
+        String selectedClient = (String) jCBCid.getSelectedItem();
+        int puntosActuales = 0; // Variable to hold current points
+        String sqlClientId = "SELECT puntos FROM clientes WHERE identidad = ?";
+        try (Connection conn = new Conexion().estableceConexion(); 
+             PreparedStatement pst = conn.prepareStatement(sqlClientId)) {
+            pst.setString(1, selectedClient);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                puntosActuales = rs.getInt("puntos"); // Get current points
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error al obtener los puntos del cliente: " + e.getMessage());
+            return;
+        }
+
+        // Calculate the maximum allowable discount (10% of current points)
+        double maxDescuentoPermitido = puntosActuales * 0.1;
+
+        // Validate that the discount does not exceed the maximum allowable discount
+        if (descuento > maxDescuentoPermitido) {
+            JOptionPane.showMessageDialog(this, "El descuento no puede ser mayor a " + String.format("%.2f", maxDescuentoPermitido) + " (10% de los puntos disponibles).");
+            jTFDescuento1.setText(String.format("%.2f", maxDescuentoPermitido)); // Update the discount field to the maximum allowed
+            descuento = maxDescuentoPermitido; // Set descuento to the maximum allowed for further calculations
+        }
+
         // Calculate the total to pay
         double totalAPagar = subtotal + impuesto - descuento;
         // Update the total to pay label
