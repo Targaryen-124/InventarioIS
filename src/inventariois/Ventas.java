@@ -70,6 +70,47 @@ public class Ventas extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Error al cargar productos: " + e.getMessage());
         }
     }
+    
+    private void calcularSubtotal() {
+        DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
+        double subtotal = 0.0;
+
+        // Iterate through the table rows to calculate the subtotal
+        for (int i = 0; i < model.getRowCount(); i++) {
+            subtotal += (double) model.getValueAt(i, 4); // Assuming the total is in the 5th column (index 4)
+        }
+
+        // Update the subtotal label
+        jLblSubTotal.setText("L. " + String.format("%.2f", subtotal));
+
+        // Calculate and update the tax
+        double impuesto = subtotal * 0.15;
+        jLblImpuesto.setText("L. " + String.format("%.2f", impuesto));
+
+        // Calculate the total to pay
+        double totalAPagar = subtotal + impuesto; // Total before discount
+
+        // Get the points from jLblpuntos
+        String puntosText = jLblpuntos.getText().replace("Puntos: ", ""); // Extract the number of points
+        int puntos = 0;
+        try {
+            puntos = Integer.parseInt(puntosText);
+        } catch (NumberFormatException e) {
+            // Handle the case where points are not a valid number
+            puntos = 0;
+        }
+
+        // Calculate the discount based on points
+        double descuento = puntos * 0.1;
+        jTFDescuento1.setText(String.format("%.2f", descuento)); // Update the discount field
+
+        // Subtract the discount from the total to pay
+        totalAPagar -= descuento;
+
+        // Update the total to pay label
+        jLabeTotalAPagar2.setText("L. " + String.format("%.2f", totalAPagar));
+    }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -87,7 +128,6 @@ public class Ventas extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         txtCantidad = new javax.swing.JTextField();
         btnEliminar = new javax.swing.JButton();
-        btnActualizar = new javax.swing.JButton();
         btnAgregar = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
         jTFCodigo = new javax.swing.JTextField();
@@ -99,17 +139,19 @@ public class Ventas extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
-        btnFinalizarCompra = new javax.swing.JButton();
-        jLabeTotalAPagar = new javax.swing.JLabel();
-        txtPago = new javax.swing.JTextField();
-        jLabelCambio = new javax.swing.JLabel();
+        txtPago = new javax.swing.JLabel();
+        jLabelPuntos = new javax.swing.JLabel();
         btnCalcular = new javax.swing.JButton();
         btnSalir = new javax.swing.JButton();
         btnImprimirFactura = new javax.swing.JButton();
-        jLabeTotalAPagar1 = new javax.swing.JLabel();
+        jLblImpuesto = new javax.swing.JLabel();
         jLabeTotalAPagar3 = new javax.swing.JLabel();
-        jTFDescuento = new javax.swing.JTextField();
-        jLabeTotalAPagar4 = new javax.swing.JLabel();
+        jLblSubTotal = new javax.swing.JLabel();
+        jTFDescuento1 = new javax.swing.JTextField();
+        jTFdPago = new javax.swing.JTextField();
+        jLabeTotalAPagar2 = new javax.swing.JLabel();
+        jLabelCambio1 = new javax.swing.JLabel();
+        btnActualizar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -150,16 +192,6 @@ public class Ventas extends javax.swing.JFrame {
             }
         });
         jPanel2.add(btnEliminar, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 200, -1, 40));
-
-        btnActualizar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        btnActualizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/Refresh.png"))); // NOI18N
-        btnActualizar.setText("Actualizar");
-        btnActualizar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnActualizarActionPerformed(evt);
-            }
-        });
-        jPanel2.add(btnActualizar, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 200, -1, 40));
 
         btnAgregar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/Edit.png"))); // NOI18N
         btnAgregar.setText("Agregar");
@@ -263,27 +295,12 @@ public class Ventas extends javax.swing.JFrame {
 
         getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 302, 704, 275));
 
-        btnFinalizarCompra.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        btnFinalizarCompra.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/Checkout.png"))); // NOI18N
-        btnFinalizarCompra.setText("Finalizar compra");
-        btnFinalizarCompra.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnFinalizarCompraActionPerformed(evt);
-            }
-        });
-        getContentPane().add(btnFinalizarCompra, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 44, 230, 40));
-
-        jLabeTotalAPagar.setText("L.");
-        jLabeTotalAPagar.setBorder(javax.swing.BorderFactory.createTitledBorder("Total a Pagar"));
-        getContentPane().add(jLabeTotalAPagar, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 300, 200, 60));
-
         txtPago.setText("L.");
         txtPago.setBorder(javax.swing.BorderFactory.createTitledBorder("Pago"));
-        getContentPane().add(txtPago, new org.netbeans.lib.awtextra.AbsoluteConstraints(820, 370, 190, 60));
+        getContentPane().add(txtPago, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 310, 200, 50));
 
-        jLabelCambio.setText("L.");
-        jLabelCambio.setBorder(javax.swing.BorderFactory.createTitledBorder("Cambio"));
-        getContentPane().add(jLabelCambio, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 430, 180, 60));
+        jLabelPuntos.setBorder(javax.swing.BorderFactory.createTitledBorder("Puntos Ganados"));
+        getContentPane().add(jLabelPuntos, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 450, 200, 50));
 
         btnCalcular.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnCalcular.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/Estimate.png"))); // NOI18N
@@ -293,7 +310,7 @@ public class Ventas extends javax.swing.JFrame {
                 btnCalcularActionPerformed(evt);
             }
         });
-        getContentPane().add(btnCalcular, new org.netbeans.lib.awtextra.AbsoluteConstraints(880, 260, 130, 40));
+        getContentPane().add(btnCalcular, new org.netbeans.lib.awtextra.AbsoluteConstraints(880, 360, 130, 30));
 
         btnSalir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/Export_2.png"))); // NOI18N
         btnSalir.setText("Salir");
@@ -302,25 +319,51 @@ public class Ventas extends javax.swing.JFrame {
                 btnSalirActionPerformed(evt);
             }
         });
-        getContentPane().add(btnSalir, new org.netbeans.lib.awtextra.AbsoluteConstraints(908, 535, 102, -1));
+        getContentPane().add(btnSalir, new org.netbeans.lib.awtextra.AbsoluteConstraints(910, 520, 102, -1));
 
         btnImprimirFactura.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         btnImprimirFactura.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/Invoice_3.png"))); // NOI18N
         btnImprimirFactura.setText("Imprimir Factura");
-        getContentPane().add(btnImprimirFactura, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 534, 180, 40));
+        btnImprimirFactura.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnImprimirFacturaActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnImprimirFactura, new org.netbeans.lib.awtextra.AbsoluteConstraints(710, 520, 180, 40));
 
-        jLabeTotalAPagar1.setText("L.");
-        jLabeTotalAPagar1.setBorder(javax.swing.BorderFactory.createTitledBorder("Impuesto"));
-        getContentPane().add(jLabeTotalAPagar1, new org.netbeans.lib.awtextra.AbsoluteConstraints(810, 200, 200, 50));
+        jLblImpuesto.setText("L.");
+        jLblImpuesto.setBorder(javax.swing.BorderFactory.createTitledBorder("Impuesto"));
+        getContentPane().add(jLblImpuesto, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 110, 200, 50));
 
         jLabeTotalAPagar3.setText("L.");
         jLabeTotalAPagar3.setBorder(javax.swing.BorderFactory.createTitledBorder("Descuento"));
-        getContentPane().add(jLabeTotalAPagar3, new org.netbeans.lib.awtextra.AbsoluteConstraints(810, 150, 200, 50));
-        getContentPane().add(jTFDescuento, new org.netbeans.lib.awtextra.AbsoluteConstraints(880, 160, 120, 30));
+        getContentPane().add(jLabeTotalAPagar3, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 170, 200, 50));
 
-        jLabeTotalAPagar4.setText("L.");
-        jLabeTotalAPagar4.setBorder(javax.swing.BorderFactory.createTitledBorder("Subtotal"));
-        getContentPane().add(jLabeTotalAPagar4, new org.netbeans.lib.awtextra.AbsoluteConstraints(810, 100, 200, 50));
+        jLblSubTotal.setText("L.");
+        jLblSubTotal.setBorder(javax.swing.BorderFactory.createTitledBorder("Subtotal"));
+        getContentPane().add(jLblSubTotal, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 50, 200, 50));
+        getContentPane().add(jTFDescuento1, new org.netbeans.lib.awtextra.AbsoluteConstraints(790, 180, 120, 30));
+
+        jTFdPago.setToolTipText("");
+        getContentPane().add(jTFdPago, new org.netbeans.lib.awtextra.AbsoluteConstraints(790, 320, 120, 30));
+
+        jLabeTotalAPagar2.setText("L.");
+        jLabeTotalAPagar2.setBorder(javax.swing.BorderFactory.createTitledBorder("Total a Pagar"));
+        getContentPane().add(jLabeTotalAPagar2, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 250, 200, 50));
+
+        jLabelCambio1.setText("L.");
+        jLabelCambio1.setBorder(javax.swing.BorderFactory.createTitledBorder("Cambio"));
+        getContentPane().add(jLabelCambio1, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 390, 200, 50));
+
+        btnActualizar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnActualizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/Refresh.png"))); // NOI18N
+        btnActualizar.setText("Actualizar");
+        btnActualizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnActualizarActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnActualizar, new org.netbeans.lib.awtextra.AbsoluteConstraints(880, 220, -1, 30));
 
         pack();
         setLocationRelativeTo(null);
@@ -333,7 +376,24 @@ public class Ventas extends javax.swing.JFrame {
     }//GEN-LAST:event_txtCantidadActionPerformed
 
     private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
-        // TODO add your handling code here:
+        // Recalculate the subtotal, tax, and total to pay
+        //calcularSubtotal(); // This will update subtotal, tax, and discount
+        // Get the current subtotal and tax from the labels
+        double subtotal = Double.parseDouble(jLblSubTotal.getText().replace("L. ", ""));
+        double impuesto = Double.parseDouble(jLblImpuesto.getText().replace("L. ", ""));
+
+        // Get the discount from jTFDescuento1
+        double descuento = 0.0;
+        try {
+            descuento = Double.parseDouble(jTFDescuento1.getText());
+        } catch (NumberFormatException e) {
+            // Handle the case where the discount is not a valid number
+            descuento = 0.0;
+        }
+        // Calculate the total to pay
+        double totalAPagar = subtotal + impuesto - descuento;
+        // Update the total to pay label
+        jLabeTotalAPagar2.setText("L. " + String.format("%.2f", totalAPagar)); 
     }//GEN-LAST:event_btnActualizarActionPerformed
 
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
@@ -377,14 +437,37 @@ public class Ventas extends javax.swing.JFrame {
             txtProducto.setText("");
             jCBSKU.setSelectedIndex(-1);
         }
+        calcularSubtotal();
     }//GEN-LAST:event_btnAgregarActionPerformed
 
-    private void btnFinalizarCompraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFinalizarCompraActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnFinalizarCompraActionPerformed
-
     private void btnCalcularActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCalcularActionPerformed
-        // TODO add your handling code here:
+        // Get the total amount to pay
+        double totalAPagar = 0.0;
+        try {
+            totalAPagar = Double.parseDouble(jLabeTotalAPagar2.getText().replace("L. ", ""));
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Error al obtener el total a pagar.");
+            return;
+        }
+        // Get the payment amount from jTFdPago
+        double pago = 0.0;
+        try {
+            pago = Double.parseDouble(jTFdPago.getText());
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Por favor, ingrese un monto de pago válido.");
+            return;
+        }
+        // Calculate the change
+        double cambio = pago - totalAPagar;
+        // Update the change label
+        jLabelCambio1.setText("L. " + String.format("%.2f", cambio));
+        // Calculate 10% of the total amount to pay
+        double porcentajeCambio = totalAPagar * 0.1;
+        jLabelPuntos.setText("P. " + String.format("%.0f", porcentajeCambio));
+        // Optionally, you can check if the payment is less than the total
+        if (cambio < 0) {
+            JOptionPane.showMessageDialog(this, "El monto de pago es insuficiente.");
+        }
     }//GEN-LAST:event_btnCalcularActionPerformed
 
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
@@ -422,6 +505,7 @@ public class Ventas extends javax.swing.JFrame {
         if (selectedRow != -1) {
             // Eliminar la fila seleccionada
             model.removeRow(selectedRow);
+            calcularSubtotal();
         } else {
             // Mostrar un mensaje si no hay fila seleccionada
             JOptionPane.showMessageDialog(this, "Por favor, seleccione una fila para eliminar.");
@@ -446,6 +530,113 @@ public class Ventas extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_jCBCidActionPerformed
+
+    private void btnImprimirFacturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImprimirFacturaActionPerformed
+        // Gather data from the form
+        int id = Integer.parseInt(jTFCodigo.getText());
+        double impuesto = Double.parseDouble(jLblImpuesto.getText().replace("L. ", ""));
+        double descuento = Double.parseDouble(jTFDescuento1.getText());
+        double subtotal = Double.parseDouble(jLblSubTotal.getText().replace("L. ", ""));
+        double totalAPagar = Double.parseDouble(jLabeTotalAPagar2.getText().replace("L. ", ""));
+
+        // Get the selected client ID from jCBCid
+        String selectedClient = (String) jCBCid.getSelectedItem();
+        int clienteId = 0;
+        String sqlClientId = "SELECT id, puntos FROM clientes WHERE identidad = ?";
+        int puntosActuales = 0; // Variable to hold current points
+        try (Connection conn = new Conexion().estableceConexion(); 
+             PreparedStatement pst = conn.prepareStatement(sqlClientId)) {
+            pst.setString(1, selectedClient);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                clienteId = rs.getInt("id");
+                puntosActuales = rs.getInt("puntos"); // Get current points
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error al obtener el ID del cliente: " + e.getMessage());
+            return;
+        }
+
+        // Calculate new points
+        String puntosText = jLabelPuntos.getText().replace("P. ", ""); // Extract the number of points earned
+        int puntosGanados = 0;
+        try {
+            puntosGanados = Integer.parseInt(puntosText);
+        } catch (NumberFormatException e) {
+            puntosGanados = 0; // Default to 0 if parsing fails
+        }
+
+        int nuevosPuntos = puntosActuales - (int) descuento + puntosGanados; // Calculate new points
+
+        // Assuming you have a variable for the logged-in user ID
+        //int usuarioId = getLoggedInUser  Id(); // Replace with your method to get the logged-in user ID
+        int usuarioId = 1;
+
+        // Prepare the SQL INSERT statement for ventasencabezado
+        String sqlInsertHeader = "INSERT INTO ventasencabezado (id, impuesto, descuento, subtotal, totalapagar, clientes_id, usuarios_idusuarios) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        try (Connection conn = new Conexion().estableceConexion(); 
+             PreparedStatement pstHeader = conn.prepareStatement(sqlInsertHeader)) {
+            pstHeader.setInt(1, id);
+            pstHeader.setDouble(2, impuesto);
+            pstHeader.setDouble(3, descuento);
+            pstHeader.setDouble(4, subtotal);
+            pstHeader.setDouble(5, totalAPagar);
+            pstHeader.setInt(6, clienteId);
+            pstHeader.setInt(7, usuarioId);
+
+            // Execute the insert for ventasencabezado
+            pstHeader.executeUpdate();
+            JOptionPane.showMessageDialog(this, "Factura guardada exitosamente.");
+
+            // Now save the details from jTable2 into ventasdetalle
+            String sqlInsertDetail = "INSERT INTO ventasdetalle (idproductoventa, cantidad, precio, ventasencabezado_id) VALUES (?, ?, ?, ?)";
+            DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
+            for (int i = 0; i < model.getRowCount(); i++) {
+                String sku = (String) model.getValueAt(i, 0); // SKU
+                int cantidad = (int) model.getValueAt(i, 2); // Cantidad
+                double precio = (double) model.getValueAt(i, 3); // Precio
+
+                // Get the product ID from the database using SKU
+                int productId = 0;
+                String sqlProductId = "SELECT idcodigos FROM productos WHERE sku = ?";
+                try (PreparedStatement pstProduct = conn.prepareStatement(sqlProductId)) {
+                    pstProduct.setString(1, sku);
+                    ResultSet rsProduct = pstProduct.executeQuery();
+                    if (rsProduct.next()) {
+                        productId = rsProduct.getInt("idcodigos");
+                    }
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(this, "Error al obtener el ID del producto: " + e.getMessage());
+                    return;
+                }
+
+                // Insert into ventasdetalle
+                try (PreparedStatement pstDetail = conn.prepareStatement(sqlInsertDetail)) {
+                    pstDetail.setInt(1, productId);
+                    pstDetail.setInt(2, cantidad);
+                    pstDetail.setDouble(3, precio);
+                    pstDetail.setInt(4, id); // ventasencabezado_id
+                    pstDetail.executeUpdate();
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(this, "Error al guardar los detalles de la factura: " + e.getMessage());
+                }
+            }
+
+            // Update the points in the clientes table
+            String sqlUpdatePoints = "UPDATE clientes SET puntos = ? WHERE id = ?";
+            try (PreparedStatement pstUpdate = conn.prepareStatement(sqlUpdatePoints)) {
+                pstUpdate.setInt(1, nuevosPuntos);
+                pstUpdate.setInt(2, clienteId);
+                pstUpdate.executeUpdate();
+                JOptionPane.showMessageDialog(this, "Puntos actualizados exitosamente.");
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Error al actualizar los puntos del cliente: " + e.getMessage());
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error al guardar la factura: " + e.getMessage());
+        }
+    }//GEN-LAST:event_btnImprimirFacturaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -487,31 +678,32 @@ public class Ventas extends javax.swing.JFrame {
     private javax.swing.JButton btnAgregar;
     private javax.swing.JButton btnCalcular;
     private javax.swing.JButton btnEliminar;
-    private javax.swing.JButton btnFinalizarCompra;
     private javax.swing.JButton btnImprimirFactura;
     private javax.swing.JButton btnSalir;
     private javax.swing.JComboBox<String> jCBCid;
     private javax.swing.JComboBox<String> jCBSKU;
-    private javax.swing.JLabel jLabeTotalAPagar;
-    private javax.swing.JLabel jLabeTotalAPagar1;
+    private javax.swing.JLabel jLabeTotalAPagar2;
     private javax.swing.JLabel jLabeTotalAPagar3;
-    private javax.swing.JLabel jLabeTotalAPagar4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabelCambio;
+    private javax.swing.JLabel jLabelCambio1;
+    private javax.swing.JLabel jLabelPuntos;
+    private javax.swing.JLabel jLblImpuesto;
+    private javax.swing.JLabel jLblSubTotal;
     private javax.swing.JLabel jLblpuntos;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField jTFCodigo;
-    private javax.swing.JTextField jTFDescuento;
+    private javax.swing.JTextField jTFDescuento1;
+    private javax.swing.JTextField jTFdPago;
     private javax.swing.JTable jTable2;
     private javax.swing.JTextField txtCantidad;
-    private javax.swing.JTextField txtPago;
+    private javax.swing.JLabel txtPago;
     private javax.swing.JTextField txtProducto;
     // End of variables declaration//GEN-END:variables
 }
