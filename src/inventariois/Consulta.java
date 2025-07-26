@@ -91,7 +91,7 @@ public class Consulta extends javax.swing.JFrame {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGap(402, 402, 402)
                 .addComponent(jLabel4)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(400, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -147,7 +147,7 @@ public class Consulta extends javax.swing.JFrame {
 
         try (Connection conn = new Conexion().estableceConexion();
              Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery("SELECT sku FROM codigos")) {
+             ResultSet rs = stmt.executeQuery("SELECT sku,descripcion FROM productos")) {
 
             while (rs.next()) {
                 jComboBox1.addItem(rs.getString("sku")); // Agregar cada SKU al JComboBox
@@ -159,7 +159,7 @@ public class Consulta extends javax.swing.JFrame {
     
     private void cargarExistencia(String sku) {
         try (Connection conn = new Conexion().estableceConexion();
-             PreparedStatement pstmt = conn.prepareStatement("SELECT existencia FROM codigos WHERE sku = ?")) { // Cambia "codigos" por el nombre de tu tabla
+             PreparedStatement pstmt = conn.prepareStatement("SELECT existencia FROM productos WHERE sku = ?")) { // Cambia "codigos" por el nombre de tu tabla
             pstmt.setString(1, sku);
             ResultSet rs = pstmt.executeQuery();
 
@@ -181,7 +181,7 @@ public class Consulta extends javax.swing.JFrame {
         try (Connection conn = new Conexion().estableceConexion();
              PreparedStatement pstmt = conn.prepareStatement("SELECT m.idmovimientos, m.fecha, m.tipomovimiento, m.cantidad " +
                                                              "FROM movimientos m " +
-                                                             "JOIN codigos c ON m.idcodigos = c.idcodigos " + // Asegúrate de que el nombre de la columna sea correcto
+                                                             "JOIN productos c ON m.idcodigos = c.idcodigos " + // Asegúrate de que el nombre de la columna sea correcto
                                                              "WHERE c.sku = ?")) {
             pstmt.setString(1, sku);
             ResultSet rs = pstmt.executeQuery();

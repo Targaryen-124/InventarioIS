@@ -5,6 +5,7 @@
 package inventariois;
 
 import inventariois.Conexion;
+import inventariois.Conexion;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.InputStream;
@@ -39,6 +40,23 @@ public class Clientes extends javax.swing.JFrame {
      */
     public Clientes() {
         initComponents();
+        
+         cargarClientes(); // Load clients when the form starts
+
+    tablaClientes.addMouseListener(new MouseAdapter() {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            int fila = tablaClientes.getSelectedRow();
+            if (fila >= 0) {
+                txtID.setText(tablaClientes.getValueAt(fila, 0).toString());
+                txtIdentidad.setText(tablaClientes.getValueAt(fila, 1).toString());
+                txtNombre.setText(tablaClientes.getValueAt(fila, 2).toString());
+                txtApellido.setText(tablaClientes.getValueAt(fila, 3).toString());
+                txtTelefono.setText(tablaClientes.getValueAt(fila, 4).toString());
+                txtPuntos.setText(tablaClientes.getValueAt(fila, 5).toString());
+            }
+        }
+    });
     }
 
     /**
@@ -119,14 +137,29 @@ public class Clientes extends javax.swing.JFrame {
 
         btnEditar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/Edit.png"))); // NOI18N
         btnEditar.setText("Editar");
+        btnEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditarActionPerformed(evt);
+            }
+        });
         jPanel1.add(btnEditar, new org.netbeans.lib.awtextra.AbsoluteConstraints(593, 61, 118, -1));
 
         btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/desactivado.png"))); // NOI18N
         btnEliminar.setText("Eliminar");
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
         jPanel1.add(btnEliminar, new org.netbeans.lib.awtextra.AbsoluteConstraints(467, 204, -1, -1));
 
         btnBuscar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/buscar.png"))); // NOI18N
         btnBuscar.setText("Buscar");
+        btnBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBuscarActionPerformed(evt);
+            }
+        });
         jPanel1.add(btnBuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(467, 129, -1, -1));
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -138,6 +171,11 @@ public class Clientes extends javax.swing.JFrame {
 
         btnActualizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/recursos/Refresh.png"))); // NOI18N
         btnActualizar.setText("Actualizar");
+        btnActualizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnActualizarActionPerformed(evt);
+            }
+        });
         jPanel1.add(btnActualizar, new org.netbeans.lib.awtextra.AbsoluteConstraints(593, 129, -1, -1));
         jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 0, 0));
 
@@ -183,50 +221,54 @@ public class Clientes extends javax.swing.JFrame {
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 0, 950, -1));
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
                                        
-        // TODO add your handling code here:
         Conexion conexion = new Conexion();
-        Connection con = conexion.estableceConexion();
+    Connection con = conexion.estableceConexion();
 
-        String id = txtID.getText();
-        String identidad = txtIdentidad.getText();
-        String nombre = txtNombre.getText();
-        String apellido = txtApellido.getText();
-        String telefono = txtTelefono.getText();
-        String puntos = txtPuntos.getText();
+    String identidad = txtIdentidad.getText();
+    String nombre = txtNombre.getText();
+    String apellido = txtApellido.getText();
+    String telefono = txtTelefono.getText();
+    String puntos = "0"; 
 
-        String sql = "INSERT INTO clientes (identidad, nombre, apellido, telefono, puntos) VALUES (?, ?, ?, ?, ?, ?)";
+    String sql = "INSERT INTO clientes (identidad, nombre, apellido, telefono, puntos) VALUES (?, ?, ?, ?, ?)";
 
-        try {
-            PreparedStatement pst = con.prepareStatement(sql);
-            
-            pst.setString(2, identidad);
-            pst.setString(3, nombre);
-            pst.setString(4, apellido);
-            pst.setString(5, telefono);
-            pst.setString(6, puntos);
+    try {
+        PreparedStatement pst = con.prepareStatement(sql);
 
-            int filasAfectadas = pst.executeUpdate();
-
-            if (filasAfectadas > 0) {
-                JOptionPane.showMessageDialog(null, "Cliente agregado correctamente");
-                cargarClientes(); // Llamar a la función para actualizar la tabla
-            } else {
-                JOptionPane.showMessageDialog(null, "Error al agregar Cliente");
-            }
-
-            con.close();
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error al agregar Cliente: " + e.toString());
-        }     
         
-        txtNombre.setText("");
-        txtApellido.setText("");
-        txtTelefono.setText("");
-        txtIdentidad.setText("");
+        pst.setString(1, identidad);
+        pst.setString(2, nombre);
+        pst.setString(3, apellido);
+        pst.setString(4, telefono);
+        pst.setString(5, puntos); 
+
+        int filasAfectadas = pst.executeUpdate();
+
+        if (filasAfectadas > 0) {
+            JOptionPane.showMessageDialog(null, "Cliente agregado correctamente");
+            cargarClientes(); 
+        } else {
+            JOptionPane.showMessageDialog(null, "Error al agregar Cliente");
+        }
+
+        con.close();
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(null, "Error al agregar Cliente: " + e.toString());
+        e.printStackTrace(); 
+    }
+
+    txtNombre.setText("");
+    txtApellido.setText("");
+    txtTelefono.setText("");
+    txtIdentidad.setText("");
+    txtPuntos.setText("");                               
+       
+
         
     }//GEN-LAST:event_btnAgregarActionPerformed
 
@@ -276,6 +318,170 @@ public class Clientes extends javax.swing.JFrame {
             generarReporteExcel(); 
         }
     }//GEN-LAST:event_btnDescargarReporteActionPerformed
+
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        // TODO add your handling code here:
+        
+        Conexion conexion = new Conexion();
+    Connection con = conexion.estableceConexion();
+
+    // Check if an ID is selected
+    if (txtID.getText().isEmpty()) {
+        JOptionPane.showMessageDialog(null, "Seleccione un cliente de la tabla para eliminar.");
+        return;
+    }
+
+    int id = Integer.parseInt(txtID.getText());
+
+    int confirmacion = JOptionPane.showConfirmDialog(null, "¿Está seguro de que desea eliminar este cliente?", "Confirmar Eliminación", JOptionPane.YES_NO_OPTION);
+
+    if (confirmacion == JOptionPane.YES_OPTION) {
+        String sql = "DELETE FROM clientes WHERE id=?";
+
+        try {
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setInt(1, id);
+
+            int filasAfectadas = pst.executeUpdate();
+
+            if (filasAfectadas > 0) {
+                JOptionPane.showMessageDialog(null, "Cliente eliminado correctamente");
+                cargarClientes(); // Refresh the table
+                limpiarCampos(); // Clear the text fields after deletion
+            } else {
+                JOptionPane.showMessageDialog(null, "Error al eliminar Cliente o el Cliente no existe.");
+            }
+
+            con.close();
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "Error de formato en ID: Asegúrese de que sea un número válido. " + e.getMessage());
+            e.printStackTrace();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error al eliminar Cliente: " + e.toString());
+            e.printStackTrace();
+        }
+    }        
+    }//GEN-LAST:event_btnEliminarActionPerformed
+
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+
+        // TODO add your handling code here:
+        
+        Conexion conexion = new Conexion();
+    Connection con = conexion.estableceConexion();
+
+    // Check if an ID is selected
+    if (txtID.getText().isEmpty()) {
+        JOptionPane.showMessageDialog(null, "Seleccione un cliente de la tabla para editar.");
+        return;
+    }
+
+    int id = Integer.parseInt(txtID.getText());
+    String identidad = txtIdentidad.getText();
+    String nombre = txtNombre.getText();
+    String apellido = txtApellido.getText();
+    String telefono = txtTelefono.getText();
+    int puntos = Integer.parseInt(txtPuntos.getText()); // Assuming puntos is an integer
+
+    String sql = "UPDATE clientes SET identidad=?, nombre=?, apellido=?, telefono=?, puntos=? WHERE id=?";
+
+    try {
+        PreparedStatement pst = con.prepareStatement(sql);
+        pst.setString(1, identidad);
+        pst.setString(2, nombre);
+        pst.setString(3, apellido);
+        pst.setString(4, telefono);
+        pst.setInt(5, puntos);
+        pst.setInt(6, id);
+
+        int filasAfectadas = pst.executeUpdate();
+
+        if (filasAfectadas > 0) {
+            JOptionPane.showMessageDialog(null, "Cliente actualizado correctamente");
+            cargarClientes(); // Refresh the table
+            limpiarCampos(); // Clear the text fields after update
+        } else {
+            JOptionPane.showMessageDialog(null, "Error al actualizar Cliente o el Cliente no existe.");
+        }
+
+        con.close();
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(null, "Error de formato en ID o Puntos: Asegúrese de que sean números válidos. " + e.getMessage());
+        e.printStackTrace();
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(null, "Error al editar Cliente: " + e.toString());
+        e.printStackTrace();
+    }
+    }//GEN-LAST:event_btnEditarActionPerformed
+
+    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
+        // TODO add your handling code here:
+        
+    Conexion conexion = new Conexion();
+    Connection con = conexion.estableceConexion();
+
+    String searchTerm = JOptionPane.showInputDialog(null, "Ingrese el ID, Identidad o Nombre del cliente a buscar:");
+
+    if (searchTerm != null && !searchTerm.trim().isEmpty()) {
+        DefaultTableModel modelo = (DefaultTableModel) tablaClientes.getModel();
+        modelo.setRowCount(0); // Clear existing rows
+
+        String sql = "SELECT id, identidad, nombre, apellido, telefono, puntos FROM clientes WHERE id LIKE ? OR identidad LIKE ? OR nombre LIKE ? ORDER BY id DESC";
+
+        try {
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setString(1, "%" + searchTerm + "%");
+            pst.setString(2, "%" + searchTerm + "%");
+            pst.setString(3, "%" + searchTerm + "%");
+
+            ResultSet rs = pst.executeQuery();
+
+            boolean found = false;
+            while (rs.next()) {
+                found = true;
+                Object[] fila = {
+                    rs.getInt("id"),
+                    rs.getString("identidad"),
+                    rs.getString("nombre"),
+                    rs.getString("apellido"),
+                    rs.getString("telefono"),
+                    rs.getInt("puntos")
+                };
+                modelo.addRow(fila);
+            }
+
+            if (!found) {
+                JOptionPane.showMessageDialog(null, "No se encontraron clientes con el criterio de búsqueda.");
+            }
+
+            con.close();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error al buscar Clientes: " + e.toString());
+            e.printStackTrace();
+        }
+    } else {
+        cargarClientes(); // If search term is empty, reload all clients
+    }
+
+    }//GEN-LAST:event_btnBuscarActionPerformed
+
+    private void btnActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarActionPerformed
+        // TODO add your handling code here:
+        
+        cargarClientes(); // Simply call the method to refresh the table
+    limpiarCampos(); // Clear fields after refreshing
+    JOptionPane.showMessageDialog(null, "La tabla de clientes ha sido actualizada.");
+    }                                             
+
+    
+    private void limpiarCampos() {
+    txtID.setText("");
+    txtIdentidad.setText("");
+    txtNombre.setText("");
+    txtApellido.setText("");
+    txtTelefono.setText("");
+    txtPuntos.setText(""); // Or set to "0" if points are always 0 initially
+    }//GEN-LAST:event_btnActualizarActionPerformed
 
     public void generarReportePDF() {
     try {

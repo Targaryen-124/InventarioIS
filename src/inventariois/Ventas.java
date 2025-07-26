@@ -596,7 +596,6 @@ public class Ventas extends javax.swing.JFrame {
         int nuevosPuntos = puntosActuales - (int) descuento + puntosGanados; // Calculate new points
 
         // Assuming you have a variable for the logged-in user ID
-        //int usuarioId = getLoggedInUser  Id(); // Replace with your method to get the logged-in user ID
         int usuarioId = 1;
 
         // Prepare the SQL INSERT statement for ventasencabezado
@@ -646,6 +645,27 @@ public class Ventas extends javax.swing.JFrame {
                     pstDetail.executeUpdate();
                 } catch (Exception e) {
                     JOptionPane.showMessageDialog(this, "Error al guardar los detalles de la factura: " + e.getMessage());
+                }
+
+                // Update product stock
+                String sqlUpdateStock = "UPDATE productos SET existencia = existencia - ? WHERE idcodigos = ?";
+                try (PreparedStatement pstUpdateStock = conn.prepareStatement(sqlUpdateStock)) {
+                    pstUpdateStock.setInt(1, cantidad);
+                    pstUpdateStock.setInt(2, productId);
+                    pstUpdateStock.executeUpdate();
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(this, "Error al actualizar el stock del producto: " + e.getMessage());
+                }
+
+                // Insert into movimientos
+                String sqlInsertMovement = "INSERT INTO movimientos (idcodigos, fecha, tipomovimiento, cantidad, usuario) VALUES (?, CURRENT_DATE, 'Salida', ?, ?)";
+                try (PreparedStatement pstMovement = conn.prepareStatement(sqlInsertMovement)) {
+                    pstMovement.setInt(1, productId);
+                    pstMovement.setInt(2, cantidad);
+                    pstMovement.setInt(3, usuarioId);
+                    pstMovement.executeUpdate();
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(this, "Error al registrar el movimiento: " + e.getMessage());
                 }
             }
 
